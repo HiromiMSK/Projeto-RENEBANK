@@ -48,12 +48,10 @@
       flex-direction: column;
     }
 
-    /* --- TELAS DE LOGIN E LOADING --- */
-    
-    /* Utilitário para esconder telas */
+    /* --- UTILITÁRIOS --- */
     .d-none { display: none !important; }
 
-    /* Tela de Login */
+    /* --- TELA DE LOGIN --- */
     #screen-login {
         position: absolute;
         inset: 0;
@@ -112,11 +110,11 @@
     }
     .btn-login:active { transform: scale(0.98); }
 
-    /* Tela de Loading */
+    /* --- TELA DE LOADING CUSTOMIZADO (O "R") --- */
     #screen-loading {
         position: absolute;
         inset: 0;
-        background: #0f172a;
+        background: #0f172a; /* Fundo escuro elegante */
         z-index: 99;
         display: flex;
         flex-direction: column;
@@ -125,21 +123,43 @@
         color: white;
     }
 
-    .loader {
-        width: 48px;
-        height: 48px;
-        border: 5px solid #FFF;
-        border-bottom-color: #facc15;
-        border-radius: 50%;
-        display: inline-block;
-        box-sizing: border-box;
-        animation: rotation 1s linear infinite;
+    /* O "R" Pulsante */
+    .loader-r {
+        font-size: 80px;
+        font-weight: 900;
+        color: #facc15;
+        font-family: sans-serif;
         margin-bottom: 20px;
+        /* Animação de pulso */
+        animation: pulse-r 1.5s infinite ease-in-out;
     }
 
-    @keyframes rotation {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    @keyframes pulse-r {
+        0% {
+            transform: scale(1);
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+        }
+        50% {
+            transform: scale(1.2); /* Cresce */
+            text-shadow: 0 0 40px rgba(250, 204, 21, 0.8); /* Brilha muito */
+        }
+        100% {
+            transform: scale(1);
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+        }
+    }
+
+    .loading-text {
+        font-size: 14px;
+        letter-spacing: 2px;
+        opacity: 0.8;
+        text-transform: uppercase;
+        animation: fade-text 1.5s infinite ease-in-out;
+    }
+
+    @keyframes fade-text {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
     }
 
     /* --- FIM TELAS NOVAS --- */
@@ -316,8 +336,8 @@
     </div>
 
     <div id="screen-loading" class="d-none">
-        <span class="loader"></span>
-        <div style="font-weight: 600; letter-spacing: 1px;">Carregando sua conta...</div>
+        <div class="loader-r">R</div>
+        <div class="loading-text">Carregando ReneBank...</div>
     </div>
 
     <div id="app-main" class="d-none" style="display:flex; flex-direction:column; height:100%;">
@@ -524,7 +544,7 @@
         telaLogin.classList.add('d-none');
         telaLoading.classList.remove('d-none');
 
-        // Espera 2 segundos
+        // Espera 2.5 segundos (tempo para curtir a animação do R)
         setTimeout(() => {
             telaLoading.classList.add('d-none');
             appMain.classList.remove('d-none');
@@ -533,7 +553,7 @@
             atualizarExtrato();
             renderizarInvestimentos();
             atualizarCaixinhaUI();
-        }, 2000);
+        }, 2500);
     }
 
     // --- ACESSIBILIDADE ---
