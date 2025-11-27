@@ -2,14 +2,27 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>ReneBank</title>
+  <title>ReneBank - App Completo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    /* RESET */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      /* Remove o outline padrão feio dos navegadores */
+      outline: none;
+    }
+
+    /* --- LÓGICA DE ACESSIBILIDADE --- */
+    /* Por padrão, sem outline pesado */
+    
+    /* Quando a classe .acessibilidade-ativa estiver no BODY, aplicamos o foco forte */
+    body.acessibilidade-ativa *:focus-visible {
+      outline: 4px solid #facc15 !important; /* Amarelo forte */
+      outline-offset: 2px;
+      box-shadow: 0 0 0 6px #000; /* Borda preta extra para contraste */
     }
 
     body {
@@ -21,15 +34,19 @@
       padding: 16px;
     }
 
-    /* Celular */
+    /* CELULAR (CONTAINER) */
     .app-container {
       position: relative;
       background: #f9fafb;
       width: 390px;
-      max-width: 100%;
+      
+      /* CORREÇÃO DO ESTICAMENTO: Altura fixa simulando celular */
+      height: 844px; /* Altura média de iPhone */
+      max-height: 95vh; /* Se a tela do PC for pequena, respeita */
+      
       border-radius: 28px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      overflow: hidden;
+      overflow: hidden; /* Tudo que passar daqui some ou scrolla dentro */
       border: 1px solid #d1d5db;
       display: flex;
       flex-direction: column;
@@ -40,6 +57,9 @@
       background: linear-gradient(145deg, #0f172a, #1d4ed8);
       padding: 18px 18px 14px;
       position: relative;
+      color: #fff;
+      flex-shrink: 0; /* Impede que o header encolha */
+      z-index: 5;
     }
 
     .header-top {
@@ -50,880 +70,571 @@
       margin-bottom: 14px;
     }
 
-    .bank-name {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-    }
-
-    .user-name {
-      font-size: 12px;
-      opacity: 0.9;
-    }
+    .bank-name { font-size: 20px; font-weight: 700; letter-spacing: 0.08em; }
+    .user-name { font-size: 12px; opacity: 0.9; }
 
     .tag-ia {
-      background: #facc15;
-      color: #78350f;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-weight: 600;
+      background: #facc15; color: #78350f; font-size: 11px;
+      padding: 4px 10px; border-radius: 999px; font-weight: 600;
       box-shadow: 0 1px 3px rgba(0,0,0,0.25);
     }
 
     .saldo-card {
-      background: #f9fafb;
-      border-radius: 22px;
-      padding: 14px 14px 12px;
-      color: #111827;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      background: #f9fafb; border-radius: 22px; padding: 14px 14px 12px;
+      color: #111827; box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
 
-    .saldo-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .saldo-header-row { display: flex; justify-content: space-between; align-items: center; }
+    .saldo-label { font-size: 12px; color: #6b7280; }
 
-    .saldo-label {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    /* Botão do Olho (Usado no Header e no Extrato) */
     .btn-eye {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      color: #6b7280;
-      padding: 2px;
-      transition: color 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      background: none; border: none; cursor: pointer; font-size: 16px;
+      color: #6b7280; padding: 4px; display: inline-flex; border-radius: 4px;
     }
-    .btn-eye:hover {
-      color: #111827;
-    }
+    .btn-eye:hover { color: #111827; background: #e5e7eb; }
 
     .saldo-valor {
-      margin-top: 4px;
-      font-size: 26px;
-      font-weight: 700;
-      color: #111827;
-      min-height: 32px;
+      margin-top: 4px; font-size: 26px; font-weight: 700; color: #111827; min-height: 32px;
     }
     
     .valor-oculto {
-      letter-spacing: 2px;
-      font-size: inherit; /* Herda tamanho do pai */
-      color: #9ca3af !important;
+      letter-spacing: 2px; font-size: inherit; color: #9ca3af !important;
     }
 
     .saldo-sub {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      font-size: 11px;
-      color: #4b5563;
+      display: flex; justify-content: space-between; margin-top: 8px;
+      font-size: 11px; color: #4b5563;
     }
+    .saldo-sub span strong { color: #16a34a; }
 
-    .saldo-sub span strong {
-      color: #16a34a;
-    }
-
-    .actions-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 14px;
-    }
+    .actions-row { display: flex; justify-content: space-between; margin-top: 14px; }
 
     .action-btn {
-      flex: 1;
-      background: #f9fafb;
-      border-radius: 18px;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.12);
-      padding: 10px 6px;
-      margin: 0 4px;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
+      flex: 1; background: #f9fafb; border-radius: 18px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.12); padding: 10px 6px;
+      margin: 0 4px; border: none; display: flex; flex-direction: column;
+      align-items: center; gap: 4px; cursor: pointer; transition: transform 0.1s;
     }
+    .action-btn:active { transform: scale(0.98); }
 
     .action-icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      background: #eff6ff;
-      color: #1e3a8a;
+      width: 26px; height: 26px; border-radius: 999px; display: flex;
+      align-items: center; justify-content: center; font-size: 16px;
+      background: #eff6ff; color: #1e3a8a;
     }
+    .action-label { font-size: 12px; color: #111827; font-weight: 500; }
 
-    .action-label {
-      font-size: 12px;
-      color: #111827;
-      font-weight: 500;
-    }
-
-    /* CONTEÚDO */
+    /* CONTEÚDO COM SCROLL */
     .app-content {
       padding: 10px 14px 10px;
       background: #f3f4f6;
-      flex: 1;
+      flex: 1; /* Ocupa o espaço restante */
       display: flex;
       flex-direction: column;
       gap: 10px;
+      
+      /* CORREÇÃO SCROLL: Só essa parte rola */
+      overflow-y: auto; 
+      /* Scroll suave */
+      scroll-behavior: smooth;
     }
+    
+    /* Esconde barra de rolagem feia */
+    .app-content::-webkit-scrollbar { width: 4px; }
+    .app-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
-    /* TABS (Draggable) */
+    /* MENU TABS */
     .tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 4px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: none; 
-      cursor: grab; 
-      user-select: none;
+      display: flex; gap: 6px; margin-bottom: 4px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none; cursor: grab; user-select: none;
+      flex-shrink: 0;
     }
     .tabs::-webkit-scrollbar { display: none; }
-    .tabs.active { cursor: grabbing; cursor: -webkit-grabbing; }
+    .tabs.active { cursor: grabbing; }
 
     .tab-btn {
-      flex: none; 
-      padding: 8px 16px;
-      border-radius: 999px;
-      border: none;
-      background: #e5e7eb;
-      color: #4b5563;
-      font-size: 12px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      font-weight: 500;
-      white-space: nowrap;
-      pointer-events: auto;
+      flex: none; padding: 8px 16px; border-radius: 999px; border: none;
+      background: #e5e7eb; color: #4b5563; font-size: 12px; cursor: pointer;
+      transition: background 0.2s, color 0.2s; font-weight: 500; pointer-events: auto;
     }
+    .tab-btn[aria-selected="true"] { background: #111827; color: #f9fafb; }
 
-    .tab-btn.active {
-      background: #111827;
-      color: #f9fafb;
-    }
-
-    .section {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      height: 100%;
-    }
-
-    .section.active {
-      display: flex;
-    }
+    .section { display: none; flex-direction: column; gap: 10px; padding-bottom: 20px; }
+    .section.active { display: flex; }
 
     .card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 10px 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-      border: 1px solid #e5e7eb;
+      background: #ffffff; border-radius: 18px; padding: 10px 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;
     }
 
-    /* Estilo Especial para a Caixinha */
+    /* Estilo Caixinha */
     .card.caixinha-card {
-        background: linear-gradient(135deg, #1e1b4b, #312e81);
-        color: #fff;
-        border: none;
+        background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff; border: none;
     }
-    
-    .card.caixinha-card .card-title, 
-    .card.caixinha-card .card-header,
-    .card.caixinha-card label {
-        color: #fff;
-    }
-    
+    .card.caixinha-card .card-title, .card.caixinha-card .card-header, .card.caixinha-card label { color: #fff; }
     .card.caixinha-card input {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        color: #fff;
+        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;
     }
+    .card.caixinha-card input::placeholder { color: rgba(255,255,255,0.5); }
     
-    .card.caixinha-card input::placeholder {
-        color: rgba(255,255,255,0.5);
-    }
-    
-    /* Header do Card com controles */
-    .card-header-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      font-size: 13px;
-    }
-
-    .card-title {
-      font-weight: 600;
-      color: #111827;
-    }
+    .card-header-controls { display: flex; align-items: center; gap: 8px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; }
+    .card-title { font-weight: 600; color: #111827; }
 
     .tag {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e0f2fe;
-      color: #1d4ed8;
-      font-weight: 500;
+      font-size: 11px; padding: 3px 8px; border-radius: 999px;
+      background: #e0f2fe; color: #1d4ed8; font-weight: 500;
     }
-    
     .tag.risco { background: #fee2e2; color: #b91c1c; }
     .tag.render { background: #4ade80; color: #064e3b; }
 
     .alerta-ia {
-      margin-top: 6px;
-      font-size: 11px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      background: #fef3c7;
-      border: 1px solid #facc15;
-      color: #78350f;
+      margin-top: 6px; font-size: 11px; padding: 8px 10px; border-radius: 12px;
+      background: #fef3c7; border: 1px solid #facc15; color: #78350f;
     }
 
-    /* Lista de transações */
+    /* Transações */
     .transacao-card {
-      margin-top: 6px;
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 8px 9px;
-      border: 1px solid #e5e7eb;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
+      margin-top: 6px; background: #ffffff; border-radius: 14px; padding: 8px 9px;
+      border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 12px;
     }
-
-    .transacao-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .transacao-left { display: flex; align-items: center; gap: 8px; }
     .transacao-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      background: #eef2ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #4f46e5;
-      font-size: 14px;
-      flex-shrink: 0;
+      width: 30px; height: 30px; border-radius: 999px; background: #eef2ff;
+      display: flex; align-items: center; justify-content: center; color: #4f46e5;
+      font-size: 14px; flex-shrink: 0;
     }
-    
-    .invest-icon {
-        background: #111827;
-        color: #fff;
-        font-weight: bold;
-        font-size: 10px;
-    }
-
-    .transacao-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .transacao-descricao {
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .transacao-meta {
-      font-size: 11px;
-      color: #6b7280;
-    }
-
+    .invest-icon { background: #111827; color: #fff; font-weight: bold; font-size: 10px; }
+    .transacao-info { display: flex; flex-direction: column; }
+    .transacao-descricao { font-weight: 600; color: #111827; }
+    .transacao-meta { font-size: 11px; color: #6b7280; }
     .categoria-pill {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      color: #374151;
-      margin-left: 4px;
+      font-size: 10px; padding: 2px 6px; border-radius: 999px;
+      background: #f3f4f6; color: #374151; margin-left: 4px;
     }
-
-    .transacao-valor {
-      font-weight: 700;
-      font-size: 13px;
-    }
+    .transacao-valor { font-weight: 700; font-size: 13px; }
     .transacao-valor.debito { color: #b91c1c; }
     .transacao-valor.credito { color: #15803d; }
-    
     .variacao { font-size: 10px; margin-top: 2px; }
     .variacao.up { color: #16a34a; }
     .variacao.down { color: #dc2626; }
 
-    /* CARROSSEL HORIZONTAL DE INVESTIMENTOS */
+    /* Horizontal Scroll */
     .horizontal-scroll {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        padding-bottom: 6px;
-        scrollbar-width: none; 
-        cursor: grab; 
-        user-select: none;
+        display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px;
+        scrollbar-width: none; cursor: grab; user-select: none;
     }
     .horizontal-scroll::-webkit-scrollbar { display: none; }
-    .horizontal-scroll.active { cursor: grabbing; cursor: -webkit-grabbing; }
+    .horizontal-scroll.active { cursor: grabbing; }
 
     .invest-card {
-        min-width: 130px;
-        background: #f9fafb;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 8px;
-        flex-shrink: 0;
-        pointer-events: none; 
+        min-width: 130px; background: #f9fafb; border: 1px solid #e5e7eb;
+        border-radius: 16px; padding: 12px; display: flex; flex-direction: column;
+        justify-content: space-between; gap: 8px; flex-shrink: 0; pointer-events: none;
     }
-
-    .invest-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
+    .invest-header { display: flex; align-items: center; gap: 8px; }
     .invest-name {
-        font-weight: 600;
-        font-size: 12px;
-        color: #111827;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-weight: 600; font-size: 12px; color: #111827; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis;
     }
+    .invest-ticker { font-size: 10px; color: #6b7280; }
 
-    .invest-ticker {
-        font-size: 10px;
-        color: #6b7280;
-    }
-
-    /* Resumo por categoria */
+    /* Resumo Grid */
     .resumo-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-      margin-top: 4px;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 4px;
     }
-
     .resumo-item {
-      background: #f9fafb;
-      border-radius: 12px;
-      padding: 6px 8px;
-      border: 1px solid #e5e7eb;
-      font-size: 11px;
+      background: #f9fafb; border-radius: 12px; padding: 6px 8px;
+      border: 1px solid #e5e7eb; font-size: 11px;
     }
+    .resumo-label { color: #6b7280; margin-bottom: 2px; }
+    .resumo-valor { font-weight: 600; color: #111827; }
 
-    .resumo-label {
-      color: #6b7280;
-      margin-bottom: 2px;
+    /* Forms */
+    .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; font-size: 12px; }
+    .form-group label { color: #111827; font-weight: 500; cursor: pointer; }
+    .form-group input, .form-group select {
+      padding: 6px 8px; border-radius: 10px; border: 1px solid #d1d5db;
+      background: #f9fafb; color: #111827; font-size: 12px; outline: none;
     }
-
-    .resumo-valor {
-      font-weight: 600;
-      color: #111827;
-    }
-
-    /* Formulários */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 6px;
-      font-size: 12px;
-    }
-
-    .form-group label {
-      color: #111827;
-      font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group select {
-      padding: 6px 8px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      background: #f9fafb;
-      color: #111827;
-      font-size: 12px;
-      outline: none;
-    }
+    .form-group input:focus, .form-group select:focus { border-color: #2563eb; background: #fff; }
 
     .btn-primary {
-      width: 100%;
-      padding: 8px;
-      border-radius: 999px;
-      border: none;
-      background: #16a34a;
-      color: #f9fafb;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      margin-top: 4px;
+      width: 100%; padding: 8px; border-radius: 999px; border: none;
+      background: #16a34a; color: #f9fafb; font-weight: 600; font-size: 13px;
+      cursor: pointer; margin-top: 4px; transition: background 0.2s;
     }
+    .btn-primary:hover { background: #15803d; }
     
-    .btn-action-group {
-        display: flex;
-        gap: 8px;
-    }
-    
-    .btn-accent {
-        background: #4ade80;
-        color: #064e3b;
-    }
-    
-    .btn-secondary {
-        background: rgba(255,255,255,0.2);
-        color: #fff;
-    }
+    .btn-action-group { display: flex; gap: 8px; }
+    .btn-accent { background: #4ade80; color: #064e3b; }
+    .btn-secondary { background: rgba(255,255,255,0.2); color: #fff; }
 
-    .hint {
-      font-size: 11px;
-      color: #6b7280;
-      margin-top: 4px;
-    }
-
+    .hint { font-size: 11px; color: #6b7280; margin-top: 4px; }
     .alerta {
-      margin-top: 4px;
-      font-size: 11px;
-      padding: 6px 8px;
-      border-radius: 10px;
-      background: #fef3c7;
-      border: 1px solid #facc15;
-      color: #92400e;
+      margin-top: 4px; font-size: 11px; padding: 6px 8px; border-radius: 10px;
+      background: #fef3c7; border: 1px solid #facc15; color: #92400e;
     }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
     .chip {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      color: #374151;
+      font-size: 11px; padding: 3px 8px; border-radius: 999px;
+      background: #e5e7eb; color: #374151;
     }
 
     /* Footer */
     .app-footer {
-      padding: 8px 14px;
-      background: #f9fafb;
-      border-top: 1px solid #e5e7eb;
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #6b7280;
+      padding: 8px 14px; background: #f9fafb; border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: space-between; font-size: 11px; color: #6b7280;
+      flex-shrink: 0; z-index: 5;
     }
+    .footer-brand { font-weight: 600; color: #1d4ed8; }
 
-    .footer-brand {
-      font-weight: 600;
-      color: #1d4ed8;
-    }
-
-    /* OVERLAY CARTÃO VIRTUAL */
+    /* OVERLAY CARTÃO VIRTUAL - CORREÇÃO */
     .overlay-cartao {
       position: absolute;
-      inset: 0;
+      top: 0; left: 0; width: 100%; height: 100%; /* Ocupa 100% do container pai (celular) */
       background: #f9fafb;
       display: none;
       flex-direction: column;
+      z-index: 50;
     }
-
-    .overlay-cartao.active {
-      display: flex;
-    }
+    .overlay-cartao.active { display: flex; }
 
     .overlay-header {
-      padding: 16px 18px 10px;
-      background: linear-gradient(135deg, #4f46e5, #a855f7);
-      color: #f9fafb;
-      border-bottom-left-radius: 32px;
+      padding: 16px 18px 10px; background: linear-gradient(135deg, #4f46e5, #a855f7);
+      color: #f9fafb; border-bottom-left-radius: 32px; flex-shrink: 0;
     }
-
     .overlay-voltar {
-      font-size: 13px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      font-size: 13px; margin-bottom: 10px; cursor: pointer; display: inline-flex;
+      align-items: center; gap: 4px; background: none; border: none; color: #fff; padding: 0;
     }
-
-    .overlay-titulo {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .overlay-sub {
-      font-size: 12px;
-      opacity: 0.95;
-    }
-
-    .overlay-body {
-      padding: 14px 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
+    .overlay-titulo { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .overlay-sub { font-size: 12px; opacity: 0.95; }
+    .overlay-body { padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; }
 
     .cartao-virtual {
-      background: linear-gradient(135deg, #4f46e5, #a855f7);
-      border-radius: 22px;
-      padding: 16px 18px;
-      color: #f9fafb;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+      background: linear-gradient(135deg, #4f46e5, #a855f7); border-radius: 22px;
+      padding: 16px 18px; color: #f9fafb; box-shadow: 0 15px 30px rgba(0,0,0,0.25);
     }
-
-    .cartao-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      font-size: 13px;
-    }
-
+    .cartao-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 13px; }
     .cartao-chip {
-      width: 34px;
-      height: 22px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #facc15, #f97316);
+      width: 34px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #facc15, #f97316);
     }
-
-    .cartao-bandeira {
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      font-size: 12px;
-    }
-
+    .cartao-bandeira { font-weight: 700; letter-spacing: 0.14em; font-size: 12px; }
     .cartao-numero {
-      font-size: 20px;
-      letter-spacing: 0.18em;
-      margin-bottom: 16px;
-      font-family: 'Courier New', Courier, monospace; 
-      font-weight: bold;
+      font-size: 20px; letter-spacing: 0.18em; margin-bottom: 16px;
+      font-family: 'Courier New', Courier, monospace; font-weight: bold;
     }
-
-    .cartao-row-bottom {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-    }
-
-    .cartao-label {
-      text-transform: uppercase;
-      opacity: 0.8;
-      margin-bottom: 2px;
-    }
-
-    .cartao-valor {
-      font-weight: 600;
-      letter-spacing: 0.08em;
-    }
-
-    .cvv-linha {
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .cvv-valor {
-      font-weight: 700;
-      margin-left: 6px;
-    }
+    .cartao-row-bottom { display: flex; justify-content: space-between; font-size: 11px; }
+    .cartao-label { text-transform: uppercase; opacity: 0.8; margin-bottom: 2px; }
+    .cartao-valor { font-weight: 600; letter-spacing: 0.08em; }
+    .cvv-linha { font-size: 13px; margin-top: 4px; }
+    .cvv-valor { font-weight: 700; margin-left: 6px; }
 
     .btn-ghost {
-      margin-top: 12px;
-      width: 100%;
-      padding: 9px;
-      border-radius: 999px;
-      border: 2px solid #4f46e5;
-      background: transparent;
-      color: #4f46e5;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      display: inline-flex;
+      margin-top: 12px; width: 100%; padding: 9px; border-radius: 999px;
+      border: 2px solid #4f46e5; background: transparent; color: #4f46e5;
+      font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex;
+      align-items: center; justify-content: center; gap: 6px; transition: background 0.2s, color 0.2s;
+    }
+    .btn-ghost:active { background: #eef2ff; }
+
+    /* BOTÃO FLUTUANTE DE ACESSIBILIDADE */
+    .a11y-toggle {
+      position: absolute;
+      top: 16px;
+      right: -50px; /* Fica fora do celular, no desktop */
+      width: 40px;
+      height: 40px;
+      background: #111827;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+      border: 2px solid #facc15;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+    .a11y-toggle:hover {
+      transform: scale(1.1);
     }
     
-    .btn-ghost:active {
-        background: #eef2ff;
+    /* No celular mesmo, posiciona fixo na tela */
+    @media (max-width: 500px) {
+      .a11y-toggle {
+        position: fixed;
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+      }
     }
 
-    .btn-ghost-icon {
-      font-size: 16px;
-    }
   </style>
 </head>
 <body>
+  
   <div class="app-container">
-    <div id="app-main">
-      <div class="header-wrapper">
-        <div class="header-top">
-          <div>
-            <div class="bank-name">RENEBANK</div>
-            <div class="user-name">Bem-vindo, Hiro</div>
-          </div>
-          <div class="tag-ia">IA ReneBank · Ativa</div>
-        </div>
+    
+    <button class="a11y-toggle" id="btn-a11y" title="Ativar alto contraste" aria-label="Ativar modo de acessibilidade">
+      ♿
+    </button>
 
-        <div class="saldo-card">
-          <div class="saldo-header-row">
-            <div class="saldo-label">Saldo disponível</div>
-            <button id="btn-eye-header" class="btn-eye" title="Mostrar/Ocultar valores">
-                👁️
-            </button>
-          </div>
-          
-          <div id="saldo-valor" class="saldo-valor">R$ 0,00</div>
-          
-          <div class="saldo-sub">
-            <span>Gasto no mês: <strong id="gasto-mes">R$ 0,00</strong></span>
-            <span>Recebido: <strong id="recebido-mes">R$ 0,00</strong></span>
-          </div>
+    <header class="header-wrapper">
+      <div class="header-top">
+        <div>
+          <h1 class="bank-name">RENEBANK</h1>
+          <div class="user-name">Bem-vindo, Hiro</div>
         </div>
-
-        <div class="actions-row">
-          <button id="btn-pix-header" class="action-btn">
-            <div class="action-icon">⚡</div>
-            <div class="action-label">Pix</div>
-          </button>
-          <button id="btn-cartao-header" class="action-btn">
-            <div class="action-icon">💳</div>
-            <div class="action-label">Cartão</div>
-          </button>
-          <button id="btn-simular-header" class="action-btn">
-            <div class="action-icon">➕</div>
-            <div class="action-label">Simular</div>
-          </button>
-        </div>
+        <div class="tag-ia">IA ReneBank · Ativa</div>
       </div>
 
-      <main class="app-content">
-        <div class="tabs" id="menu-tabs">
-          <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
-          <button class="tab-btn" data-tab="extrato">Extrato</button>
-          <button class="tab-btn" data-tab="pix">PIX / Boleto</button>
-          <button class="tab-btn" data-tab="investimentos">Investimentos</button>
-          <button class="tab-btn" data-tab="perfil">Perfil</button>
+      <div class="saldo-card">
+        <div class="saldo-header-row">
+          <div class="saldo-label">Saldo disponível</div>
+          <button id="btn-eye-header" class="btn-eye" aria-label="Ocultar ou mostrar saldo">
+              <span aria-hidden="true">👁️</span>
+          </button>
         </div>
-
-        <section id="dashboard" class="section active">
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Resumo por categoria</span>
-              <span class="tag">visão inteligente</span>
-            </div>
-            <div id="resumo-categorias" class="resumo-grid"></div>
-
-            <div id="alerta-dashboard" class="alerta-ia">
-              IA ReneBank analisando seus gastos recentes...
-            </div>
-          </div>
-        </section>
-
-        <section id="extrato" class="section">
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Extrato inteligente</span>
-              <div class="card-header-controls">
-                  <button id="btn-eye-extrato" class="btn-eye" title="Mostrar/Ocultar valores">
-                    👁️
-                  </button>
-                  <span class="tag">auto-categorizado</span>
-              </div>
-            </div>
-            <div id="lista-transacoes"></div>
-          </div>
-        </section>
-
-        <section id="pix" class="section">
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Enviar dinheiro (PIX)</span>
-            </div>
-
-            <div class="form-group">
-              <label>Quem vai receber?</label>
-              <select id="destinatario-pix">
-                <option value="">Selecione um destinatário</option>
-                <option value="mae">Mãe ❤️</option>
-                <option value="jorge">Jorge (Dev da equipe)</option>
-                <option value="padaria">Padaria da Esquina</option>
-                <option value="mercado">Mercado Extra</option>
-                <option value="bar">Bar do Zé</option>
-                <option value="ia">Categoria (IA vai sugerir)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Chave PIX</label>
-              <input id="chave-pix" type="text" placeholder="e-mail, CPF ou telefone" />
-            </div>
-
-            <div class="form-group">
-              <label>Valor</label>
-              <input id="valor-pix" type="number" step="0.01" placeholder="0,00" />
-            </div>
-            <button class="btn-primary" onclick="simularPix()">Simular envio PIX</button>
-            <div class="hint">Apenas simulação visual para o MVP.</div>
-            <div id="retorno-pix" class="alerta" style="display:none;"></div>
-          </div>
-        </section>
         
-        <section id="investimentos" class="section">
-            <div class="card caixinha-card">
-                <div class="card-header">
-                    <span class="card-title">Caixinha Turbo</span>
-                    <span class="tag render">1% a.m.</span>
-                </div>
-                <div style="margin-bottom: 12px;">
-                    <span style="font-size: 12px; opacity: 0.8;">Saldo guardado</span>
-                    <div id="valor-caixinha" style="font-size: 24px; font-weight: bold;">R$ 0,00</div>
-                </div>
-                <div class="form-group">
-                    <input id="input-caixinha" type="number" placeholder="Valor (R$)" />
-                </div>
-                <div class="btn-action-group">
-                    <button class="btn-primary btn-accent" onclick="operarCaixinha('depositar')">Guardar</button>
-                    <button class="btn-primary btn-secondary" onclick="operarCaixinha('resgatar')">Resgatar</button>
-                </div>
-                <button class="btn-ghost" style="color: #a5b4fc; margin-top: 8px; font-size: 11px;" onclick="simularRendimentoCaixinha()">
-                    ✨ Simular 1 mês de rendimento
-                </button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                  <span class="card-title">Minha Carteira</span>
-                  <span class="tag risco">Risco: E-Sports</span>
-                </div>
-                <div id="lista-investimentos" class="horizontal-scroll">
-                    </div>
-                <p class="hint">Valores atualizados com base no "hype" de mercado.</p>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Ofertas Públicas (IPO)</span>
-                </div>
-                <div class="transacao-card">
-                    <div class="transacao-left">
-                        <div class="transacao-icon invest-icon">WOR</div>
-                        <div class="transacao-info">
-                            <span class="transacao-descricao">Worlds 2025 Fund</span>
-                            <span class="transacao-meta">Fundo Multimercado</span>
-                        </div>
-                    </div>
-                    <button class="chip" style="border:none; cursor:pointer;">Ver</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="perfil" class="section">
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Perfil financeiro</span>
-            </div>
-            <p class="hint">
-              Com base no seu histórico, identificamos seu perfil como equilibrado,
-              com potencial para aumento de poupança.
-            </p>
-            <div class="chips">
-              <span class="chip">Perfil: Equilibrado</span>
-              <span class="chip">Meta: reduzir Lazer em 10%</span>
-              <span class="chip">Sugestão: criar reserva de emergência</span>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer class="app-footer">
-        <span class="footer-brand">ReneBank · MVP</span>
-        <span>Hub financeiro com IA</span>
-      </footer>
-    </div>
-
-    <div id="overlay-cartao" class="overlay-cartao">
-      <div class="overlay-header">
-        <div class="overlay-voltar" id="btn-voltar-cartao">
-          ← Voltar
-        </div>
-        <div class="overlay-titulo">Cartão Virtual</div>
-        <div class="overlay-sub">
-          Use este cartão para compras online seguras. O número expira em 24h.
+        <div id="saldo-valor" class="saldo-valor" aria-live="polite">R$ 0,00</div>
+        
+        <div class="saldo-sub">
+          <span>Gasto no mês: <strong id="gasto-mes">R$ 0,00</strong></span>
+          <span>Recebido: <strong id="recebido-mes">R$ 0,00</strong></span>
         </div>
       </div>
-      <div class="overlay-body">
-        <div class="cartao-virtual">
-          <div class="cartao-top">
-            <div class="cartao-chip"></div>
-            <div class="cartao-bandeira">RENEBANK</div>
-          </div>
-          <div id="numero-cartao" class="cartao-numero">
-            </div>
-          <div class="cartao-row-bottom">
-            <div>
-              <div class="cartao-label">Titular</div>
-              <div class="cartao-valor">HIRO</div>
-            </div>
-            <div>
-              <div class="cartao-label">Validade</div>
-              <div class="cartao-valor">12/30</div>
-            </div>
-          </div>
-        </div>
 
-        <div class="cvv-linha">
-          CVV Dinâmico:
-          <span id="cvv-dinamico" class="cvv-valor">000</span>
-        </div>
-
-        <button id="btn-atualizar-cartao" class="btn-ghost">
-          <span class="btn-ghost-icon">🔄</span>
-          GERAR NOVO CARTÃO VIRTUAL
+      <nav class="actions-row" aria-label="Ações rápidas">
+        <button id="btn-pix-header" class="action-btn">
+          <div class="action-icon" aria-hidden="true">⚡</div>
+          <div class="action-label">Pix</div>
         </button>
+        <button id="btn-cartao-header" class="action-btn">
+          <div class="action-icon" aria-hidden="true">💳</div>
+          <div class="action-label">Cartão</div>
+        </button>
+        <button id="btn-simular-header" class="action-btn">
+          <div class="action-icon" aria-hidden="true">➕</div>
+          <div class="action-label">Simular</div>
+        </button>
+      </nav>
+    </header>
+
+    <main class="app-content">
+      <div class="tabs" id="menu-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" id="tab-dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="extrato" role="tab" aria-selected="false" id="tab-extrato">Extrato</button>
+        <button class="tab-btn" data-tab="pix" role="tab" aria-selected="false" id="tab-pix">PIX / Boleto</button>
+        <button class="tab-btn" data-tab="investimentos" role="tab" aria-selected="false" id="tab-investimentos">Investimentos</button>
+        <button class="tab-btn" data-tab="perfil" role="tab" aria-selected="false" id="tab-perfil">Perfil</button>
       </div>
+
+      <section id="dashboard" class="section active" role="tabpanel" aria-labelledby="tab-dashboard">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Resumo por categoria</h2>
+            <span class="tag">visão inteligente</span>
+          </div>
+          <div id="resumo-categorias" class="resumo-grid"></div>
+
+          <div id="alerta-dashboard" class="alerta-ia" aria-live="polite">
+            IA ReneBank analisando seus gastos recentes...
+          </div>
+        </div>
+      </section>
+
+      <section id="extrato" class="section" role="tabpanel" aria-labelledby="tab-extrato">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Extrato inteligente</h2>
+            <div class="card-header-controls">
+                <button id="btn-eye-extrato" class="btn-eye" aria-label="Ocultar valores do extrato">
+                  <span aria-hidden="true">👁️</span>
+                </button>
+                <span class="tag">auto-categorizado</span>
+            </div>
+          </div>
+          <div id="lista-transacoes"></div>
+        </div>
+      </section>
+
+      <section id="pix" class="section" role="tabpanel" aria-labelledby="tab-pix">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Enviar dinheiro (PIX)</h2>
+          </div>
+
+          <div class="form-group">
+            <label for="destinatario-pix">Quem vai receber?</label>
+            <select id="destinatario-pix">
+              <option value="">Selecione um destinatário</option>
+              <option value="mae">Mãe ❤️</option>
+              <option value="jorge">Jorge (Dev da equipe)</option>
+              <option value="padaria">Padaria da Esquina</option>
+              <option value="mercado">Mercado Extra</option>
+              <option value="bar">Bar do Zé</option>
+              <option value="ia">Categoria (IA vai sugerir)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="chave-pix">Chave PIX</label>
+            <input id="chave-pix" type="text" placeholder="e-mail, CPF ou telefone" />
+          </div>
+
+          <div class="form-group">
+            <label for="valor-pix">Valor</label>
+            <input id="valor-pix" type="number" step="0.01" placeholder="0,00" />
+          </div>
+          <button class="btn-primary" onclick="simularPix()">Simular envio PIX</button>
+          <div class="hint">Apenas simulação visual para o MVP.</div>
+          <div id="retorno-pix" class="alerta" style="display:none;" aria-live="assertive"></div>
+        </div>
+      </section>
+      
+      <section id="investimentos" class="section" role="tabpanel" aria-labelledby="tab-investimentos">
+          <div class="card caixinha-card">
+              <div class="card-header">
+                  <h2 class="card-title">Caixinha Turbo</h2>
+                  <span class="tag render">1% a.m.</span>
+              </div>
+              <div style="margin-bottom: 12px;">
+                  <span style="font-size: 12px; opacity: 0.8;">Saldo guardado</span>
+                  <div id="valor-caixinha" style="font-size: 24px; font-weight: bold;" aria-live="polite">R$ 0,00</div>
+              </div>
+              <div class="form-group">
+                  <label for="input-caixinha" class="visually-hidden">Valor para guardar ou resgatar</label>
+                  <input id="input-caixinha" type="number" placeholder="Valor (R$)" />
+              </div>
+              <div class="btn-action-group">
+                  <button class="btn-primary btn-accent" onclick="operarCaixinha('depositar')">Guardar</button>
+                  <button class="btn-primary btn-secondary" onclick="operarCaixinha('resgatar')">Resgatar</button>
+              </div>
+              <button class="btn-ghost" style="color: #a5b4fc; margin-top: 8px; font-size: 11px;" onclick="simularRendimentoCaixinha()">
+                  ✨ Simular 1 mês de rendimento
+              </button>
+          </div>
+
+          <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Minha Carteira</h2>
+                <span class="tag risco">Risco: E-Sports</span>
+              </div>
+              <div id="lista-investimentos" class="horizontal-scroll">
+                  </div>
+              <p class="hint">Valores atualizados com base no "hype" de mercado.</p>
+          </div>
+          
+          <div class="card">
+              <div class="card-header">
+                  <h2 class="card-title">Ofertas Públicas (IPO)</h2>
+              </div>
+              <div class="transacao-card">
+                  <div class="transacao-left">
+                      <div class="transacao-icon invest-icon" aria-hidden="true">WOR</div>
+                      <div class="transacao-info">
+                          <span class="transacao-descricao">Worlds 2025 Fund</span>
+                          <span class="transacao-meta">Fundo Multimercado</span>
+                      </div>
+                  </div>
+                  <button class="chip" style="border:none; cursor:pointer;">Ver</button>
+              </div>
+          </div>
+      </section>
+
+      <section id="perfil" class="section" role="tabpanel" aria-labelledby="tab-perfil">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Perfil financeiro</h2>
+          </div>
+          <p class="hint">
+            Com base no seu histórico, identificamos seu perfil como equilibrado,
+            com potencial para aumento de poupança.
+          </p>
+          <div class="chips">
+            <span class="chip">Perfil: Equilibrado</span>
+            <span class="chip">Meta: reduzir Lazer em 10%</span>
+            <span class="chip">Sugestão: criar reserva de emergência</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span class="footer-brand">ReneBank · MVP</span>
+      <span>Hub financeiro com IA</span>
+    </footer>
+  </div>
+
+  <div id="overlay-cartao" class="overlay-cartao" role="dialog" aria-modal="true" aria-labelledby="titulo-cartao">
+    <div class="overlay-header">
+      <button class="overlay-voltar" id="btn-voltar-cartao" aria-label="Voltar para o menu principal">
+        ← Voltar
+      </button>
+      <div class="overlay-titulo" id="titulo-cartao">Cartão Virtual</div>
+      <div class="overlay-sub">
+        Use este cartão para compras online seguras. O número expira em 24h.
+      </div>
+    </div>
+    <div class="overlay-body">
+      <div class="cartao-virtual" aria-label="Imagem do cartão virtual">
+        <div class="cartao-top">
+          <div class="cartao-chip"></div>
+          <div class="cartao-bandeira">RENEBANK</div>
+        </div>
+        <div id="numero-cartao" class="cartao-numero" aria-label="Número do cartão">
+          </div>
+        <div class="cartao-row-bottom">
+          <div>
+            <div class="cartao-label">Titular</div>
+            <div class="cartao-valor">HIRO</div>
+          </div>
+          <div>
+            <div class="cartao-label">Validade</div>
+            <div class="cartao-valor">12/30</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cvv-linha">
+        CVV Dinâmico:
+        <span id="cvv-dinamico" class="cvv-valor">000</span>
+      </div>
+
+      <button id="btn-atualizar-cartao" class="btn-ghost">
+        <span class="btn-ghost-icon" aria-hidden="true">🔄</span>
+        GERAR NOVO CARTÃO VIRTUAL
+      </button>
     </div>
   </div>
 
   <script>
+    // --- LÓGICA DO BOTÃO DE ACESSIBILIDADE ---
+    const btnA11y = document.getElementById("btn-a11y");
+    
+    btnA11y.addEventListener("click", () => {
+      document.body.classList.toggle("acessibilidade-ativa");
+      
+      const ativo = document.body.classList.contains("acessibilidade-ativa");
+      if(ativo) {
+        alert("Modo de acessibilidade ativado: Bordas de alto contraste.");
+        btnA11y.setAttribute("aria-pressed", "true");
+      } else {
+        alert("Modo de acessibilidade desativado.");
+        btnA11y.setAttribute("aria-pressed", "false");
+      }
+    });
+
+
     // --- ESTADO ---
     let mostrarValores = true; 
     let saldoCaixinha = 0.00;
     let saldoContaCorrente = 0;
 
-    // Elementos de controle
     const btnEyeHeader = document.getElementById("btn-eye-header");
     const btnEyeExtrato = document.getElementById("btn-eye-extrato");
 
@@ -954,22 +665,22 @@
       bar: "bar_do_ze@pix.com"
     };
 
-    // --- FUNÇÕES AUXILIARES ---
     function formatarValor(v) {
       return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 
-    // --- LÓGICA DO OLHO (PRIVACIDADE) ---
-    // Agora temos 2 botões que fazem a mesma coisa
+    // --- LÓGICA DO OLHO ---
     function alternarPrivacidade() {
         mostrarValores = !mostrarValores; 
         
-        // Atualiza ícones dos DOIS botões
-        const icone = mostrarValores ? "👁️" : "🙈";
-        btnEyeHeader.textContent = icone;
-        btnEyeExtrato.textContent = icone;
+        const labelTexto = mostrarValores ? "Ocultar saldo" : "Mostrar saldo";
+        btnEyeHeader.setAttribute("aria-label", labelTexto);
+        btnEyeExtrato.setAttribute("aria-label", labelTexto);
 
-        // Atualiza toda a tela
+        const icone = mostrarValores ? "👁️" : "🙈";
+        btnEyeHeader.querySelector('span').textContent = icone;
+        btnEyeExtrato.querySelector('span').textContent = icone;
+
         atualizarExtrato();
         renderizarInvestimentos(); 
         atualizarCaixinhaUI(); 
@@ -981,7 +692,9 @@
     // --- TABS ---
     function ativarTab(tabId) {
       document.querySelectorAll(".tab-btn").forEach(b => {
-        b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
+        const isActive = b.getAttribute("data-tab") === tabId;
+        b.classList.toggle("active", isActive);
+        b.setAttribute("aria-selected", isActive);
       });
       document.querySelectorAll(".section").forEach(sec => {
         sec.classList.toggle("active", sec.id === tabId);
@@ -998,14 +711,16 @@
     document.getElementById("btn-pix-header").addEventListener("click", () => ativarTab("pix"));
     document.getElementById("btn-cartao-header").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.add("active");
+      document.getElementById("btn-voltar-cartao").focus();
     });
     document.getElementById("btn-simular-header").addEventListener("click", simularMovimentacao);
 
     document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.remove("active");
+      document.getElementById("btn-cartao-header").focus(); 
     });
 
-    // --- ATUALIZAR EXTRATO E SALDO GERAL ---
+    // --- ATUALIZAR EXTRATO ---
     function atualizarExtrato() {
       const lista = document.getElementById("lista-transacoes");
       lista.innerHTML = "";
@@ -1023,7 +738,6 @@
         if (!resumo[t.categoria]) resumo[t.categoria] = 0;
         resumo[t.categoria] += Math.abs(t.valor);
 
-        // Render card
         const card = document.createElement("div");
         card.className = "transacao-card";
 
@@ -1031,6 +745,7 @@
         left.className = "transacao-left";
         const icon = document.createElement("div");
         icon.className = "transacao-icon";
+        icon.setAttribute("aria-hidden", "true"); 
         icon.textContent = t.valor < 0 ? "💸" : "⬆️";
 
         const info = document.createElement("div");
@@ -1054,7 +769,6 @@
         const valor = document.createElement("div");
         valor.className = "transacao-valor " + (t.valor < 0 ? "debito" : "credito");
         
-        // AGORA VERIFICA PRIVACIDADE NO EXTRATO TAMBÉM
         if (mostrarValores) {
             valor.textContent = (t.valor < 0 ? "- " : "+ ") + formatarValor(Math.abs(t.valor));
             valor.classList.remove("valor-oculto");
@@ -1112,7 +826,6 @@
       gerarInsights(resumo);
     }
 
-    // --- LÓGICA DA CAIXINHA ---
     function atualizarCaixinhaUI() {
         const elVal = document.getElementById("valor-caixinha");
         if(mostrarValores) {
@@ -1180,7 +893,6 @@
         alert(`🤑 O dinheiro rendeu! + ${formatarValor(rendimento)}`);
     }
 
-    // --- RENDERIZAR CARROSSEL INVESTIMENTOS ---
     function renderizarInvestimentos() {
         const divLista = document.getElementById("lista-investimentos");
         divLista.innerHTML = "";
@@ -1196,6 +908,7 @@
             
             const icon = document.createElement("div");
             icon.className = "transacao-icon invest-icon";
+            icon.setAttribute("aria-hidden", "true");
             icon.textContent = tickerSigla;
             
             const ticker = document.createElement("span");
@@ -1235,7 +948,6 @@
         });
     }
 
-    // --- DRAG TO SCROLL ---
     const draggables = document.querySelectorAll('.horizontal-scroll, .tabs');
     draggables.forEach(slider => {
       let isDown = false;
@@ -1325,7 +1037,10 @@
 
     function simularPix() {
       const val = parseFloat(document.getElementById("valor-pix").value || "0");
-      if(val <= 0) return alert("Valor inválido");
+      if(val <= 0) {
+          alert("Valor inválido");
+          return;
+      }
       transacoes.unshift({
           id: transacoes.length + 1,
           descricao: "PIX Enviado",
@@ -1334,8 +1049,10 @@
           origemServico: "PIX",
           categoria: "Transferência"
       });
-      document.getElementById("retorno-pix").style.display = 'block';
-      document.getElementById("retorno-pix").textContent = "Sucesso!";
+      const retorno = document.getElementById("retorno-pix");
+      retorno.style.display = 'block';
+      retorno.textContent = "Sucesso! PIX enviado.";
+      
       atualizarExtrato();
       ativarTab("extrato");
     }
