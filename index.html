@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>ReneBank - Login Seguro</title>
+  <title>ReneBank - App Completo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     /* RESET */
@@ -14,7 +14,8 @@
       outline: none;
     }
 
-    /* ACESSIBILIDADE */
+    /* ACESSIBILIDADE: Foco visível */
+    /* Só aplica a borda grossa se a classe estiver no corpo */
     body.acessibilidade-ativa *:focus-visible {
       outline: 4px solid #facc15 !important;
       outline-offset: 2px;
@@ -37,149 +38,58 @@
       position: relative;
       background: #f9fafb;
       width: 390px;
-      height: 844px;
+      height: 844px; /* Altura fixa */
       max-width: 100%;
       max-height: 95vh;
       border-radius: 28px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      overflow: hidden;
+      overflow: hidden; /* Corta o que passar */
       border: 8px solid #111827;
       display: flex;
       flex-direction: column;
     }
 
-    /* --- UTILITÁRIOS --- */
+    /* UTILITÁRIOS */
     .d-none { display: none !important; }
 
-    /* --- TELA DE LOGIN --- */
+    /* TELA LOGIN */
     #screen-login {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(145deg, #0f172a, #1e3a8a);
-        z-index: 100;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 30px;
-        color: white;
+        position: absolute; inset: 0; background: linear-gradient(145deg, #0f172a, #1e3a8a);
+        z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 30px; color: white;
     }
-
-    .login-logo {
-        font-size: 32px;
-        font-weight: 800;
-        margin-bottom: 8px;
-        letter-spacing: 2px;
-    }
-    
-    .login-sub {
-        font-size: 14px;
-        opacity: 0.8;
-        margin-bottom: 40px;
-    }
-
-    .login-form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .login-input {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        padding: 14px;
-        border-radius: 12px;
-        color: white;
-        font-size: 16px;
-    }
+    .login-logo { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: 2px; }
+    .login-sub { font-size: 14px; opacity: 0.8; margin-bottom: 40px; }
+    .login-form { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+    .login-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 14px; border-radius: 12px; color: white; font-size: 16px; }
     .login-input::placeholder { color: rgba(255,255,255,0.5); }
     .login-input:focus { background: rgba(255,255,255,0.2); border-color: #facc15; }
-
-    .btn-login {
-        background: #facc15;
-        color: #111827;
-        font-weight: bold;
-        padding: 14px;
-        border-radius: 12px;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 10px;
-        transition: transform 0.1s;
-    }
+    .btn-login { background: #facc15; color: #111827; font-weight: bold; padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer; margin-top: 10px; transition: transform 0.1s; }
     .btn-login:active { transform: scale(0.98); }
 
-    /* --- TELA DE LOADING CUSTOMIZADO (O "R") --- */
+    /* TELA LOADING */
     #screen-loading {
-        position: absolute;
-        inset: 0;
-        background: #0f172a; /* Fundo escuro elegante */
-        z-index: 99;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
+        position: absolute; inset: 0; background: #0f172a; z-index: 99;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
     }
-
-    /* O "R" Pulsante */
     .loader-r {
-        font-size: 80px;
-        font-weight: 900;
-        color: #facc15;
-        font-family: sans-serif;
-        margin-bottom: 20px;
-        /* Animação de pulso */
+        font-size: 80px; font-weight: 900; color: #facc15; font-family: sans-serif; margin-bottom: 20px;
         animation: pulse-r 1.5s infinite ease-in-out;
     }
-
     @keyframes pulse-r {
-        0% {
-            transform: scale(1);
-            text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
-        }
-        50% {
-            transform: scale(1.2); /* Cresce */
-            text-shadow: 0 0 40px rgba(250, 204, 21, 0.8); /* Brilha muito */
-        }
-        100% {
-            transform: scale(1);
-            text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
-        }
+        0% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+        50% { transform: scale(1.2); text-shadow: 0 0 40px rgba(250, 204, 21, 0.8); }
+        100% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
     }
+    .loading-text { font-size: 14px; letter-spacing: 2px; opacity: 0.8; text-transform: uppercase; animation: fade-text 1.5s infinite ease-in-out; }
+    @keyframes fade-text { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-    .loading-text {
-        font-size: 14px;
-        letter-spacing: 2px;
-        opacity: 0.8;
-        text-transform: uppercase;
-        animation: fade-text 1.5s infinite ease-in-out;
-    }
-
-    @keyframes fade-text {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
-    }
-
-    /* --- FIM TELAS NOVAS --- */
-
-
-    /* HEADER APP */
-    .header-wrapper {
-      background: linear-gradient(145deg, #0f172a, #1d4ed8);
-      padding: 18px 18px 14px;
-      position: relative;
-      color: #fff;
-      flex-shrink: 0;
-      z-index: 10;
-    }
-
+    /* HEADER */
+    .header-wrapper { background: linear-gradient(145deg, #0f172a, #1d4ed8); padding: 18px 18px 14px; position: relative; color: #fff; flex-shrink: 0; z-index: 10; }
     .header-top { display: flex; justify-content: space-between; align-items: center; color: #e5e7eb; margin-bottom: 14px; }
     .bank-name { font-size: 20px; font-weight: 700; letter-spacing: 0.08em; }
     .user-name { font-size: 12px; opacity: 0.9; }
     .tag-ia { background: #facc15; color: #78350f; font-size: 11px; padding: 4px 10px; border-radius: 999px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
-
     .saldo-card { background: #f9fafb; border-radius: 22px; padding: 14px 14px 12px; color: #111827; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
     .saldo-header-row { display: flex; justify-content: space-between; align-items: center; }
     .saldo-label { font-size: 12px; color: #6b7280; }
@@ -189,14 +99,13 @@
     .valor-oculto { letter-spacing: 2px; font-size: inherit; color: #9ca3af !important; }
     .saldo-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #4b5563; }
     .saldo-sub span strong { color: #16a34a; }
-
     .actions-row { display: flex; justify-content: space-between; margin-top: 14px; }
     .action-btn { flex: 1; background: #f9fafb; border-radius: 18px; box-shadow: 0 5px 10px rgba(0,0,0,0.12); padding: 10px 6px; margin: 0 4px; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: transform 0.1s; }
     .action-btn:active { transform: scale(0.98); }
     .action-icon { width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #eff6ff; color: #1e3a8a; }
     .action-label { font-size: 12px; color: #111827; font-weight: 500; }
 
-    /* CONTEÚDO COM SCROLL */
+    /* CONTEÚDO */
     .app-content { padding: 10px 14px 10px; background: #f3f4f6; flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; scroll-behavior: smooth; }
     .app-content::-webkit-scrollbar { width: 4px; }
     .app-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
@@ -224,6 +133,7 @@
     .tag.render { background: #4ade80; color: #064e3b; }
     .alerta-ia { margin-top: 6px; font-size: 11px; padding: 8px 10px; border-radius: 12px; background: #fef3c7; border: 1px solid #facc15; color: #78350f; }
 
+    /* OUTROS ESTILOS */
     .transacao-card { margin-top: 6px; background: #ffffff; border-radius: 14px; padding: 8px 9px; border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     .transacao-left { display: flex; align-items: center; gap: 8px; }
     .transacao-icon { width: 30px; height: 30px; border-radius: 999px; background: #eef2ff; display: flex; align-items: center; justify-content: center; color: #4f46e5; font-size: 14px; flex-shrink: 0; }
@@ -309,10 +219,16 @@
       border: 2px solid #facc15;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       font-size: 24px;
-      transition: transform 0.2s;
+      transition: transform 0.2s, background 0.3s;
       z-index: 9999;
     }
     .a11y-toggle:hover { transform: scale(1.1); }
+    /* Estado Ativo: Fica Amarelo */
+    .a11y-toggle.ativo {
+        background: #facc15;
+        color: #111827;
+        border-color: #111827;
+    }
 
   </style>
 </head>
@@ -540,15 +456,12 @@
         const telaLoading = document.getElementById('screen-loading');
         const appMain = document.getElementById('app-main');
 
-        // Some login, mostra loading
         telaLogin.classList.add('d-none');
         telaLoading.classList.remove('d-none');
 
-        // Espera 2.5 segundos (tempo para curtir a animação do R)
         setTimeout(() => {
             telaLoading.classList.add('d-none');
             appMain.classList.remove('d-none');
-            // Inicializa dados
             gerarDadosCartao();
             atualizarExtrato();
             renderizarInvestimentos();
@@ -558,10 +471,21 @@
 
     // --- ACESSIBILIDADE ---
     const btnA11y = document.getElementById("btn-a11y");
+    
     btnA11y.addEventListener("click", () => {
       document.body.classList.toggle("acessibilidade-ativa");
       const ativo = document.body.classList.contains("acessibilidade-ativa");
-      btnA11y.setAttribute("aria-pressed", ativo ? "true" : "false");
+      
+      if(ativo) {
+        btnA11y.classList.add("ativo"); // Fica amarelo
+        btnA11y.setAttribute("aria-pressed", "true");
+      } else {
+        btnA11y.classList.remove("ativo"); // Volta a ser preto
+        btnA11y.setAttribute("aria-pressed", "false");
+      }
+      
+      // SOLUÇÃO DO "VOX": Tira o foco do botão para não ficar com a borda presa
+      btnA11y.blur();
     });
 
     // --- ESTADO & DADOS ---
