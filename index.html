@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>ReneBank - Com Voz</title>
+  <title>ReneBank - App Completo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     /* RESET */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; outline: none; }
 
-    /* ACESSIBILIDADE VISUAL */
+    /* ACESSIBILIDADE */
     body.acessibilidade-ativa *:focus-visible {
       outline: 4px solid #facc15 !important;
       outline-offset: 2px;
@@ -44,7 +44,7 @@
 
     .d-none { display: none !important; }
 
-    /* TELA LOGIN */
+    /* TELAS (LOGIN/LOADING) */
     #screen-login {
         position: absolute; inset: 0; background: linear-gradient(145deg, #0f172a, #1e3a8a);
         z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; color: white;
@@ -53,11 +53,8 @@
     .login-sub { font-size: 14px; opacity: 0.8; margin-bottom: 40px; }
     .login-form { width: 100%; display: flex; flex-direction: column; gap: 16px; }
     .login-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 14px; border-radius: 12px; color: white; font-size: 16px; }
-    .login-input::placeholder { color: rgba(255,255,255,0.5); }
     .btn-login { background: #facc15; color: #111827; font-weight: bold; padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer; margin-top: 10px; }
-    .btn-login:active { transform: scale(0.98); }
-
-    /* LOADING R */
+    
     #screen-loading {
         position: absolute; inset: 0; background: #0f172a; z-index: 99;
         display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
@@ -185,7 +182,18 @@
     .btn-ghost { margin-top: 12px; width: 100%; padding: 9px; border-radius: 999px; border: 2px solid #4f46e5; background: transparent; color: #4f46e5; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s, color 0.2s; }
     .btn-ghost:active { background: #eef2ff; }
 
-    /* BOTÃO ACESSIBILIDADE FIXO */
+    /* BOLETO RESULTADO */
+    .boleto-result {
+        background: #f3f4f6;
+        padding: 12px;
+        border-radius: 12px;
+        margin-top: 10px;
+        border: 1px dashed #6b7280;
+    }
+    .boleto-label { font-size: 11px; color: #6b7280; }
+    .boleto-dado { font-weight: 700; color: #111827; font-size: 14px; margin-bottom: 6px; }
+
+    /* ACESSIBILIDADE FIXA */
     .a11y-toggle {
       position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
       background: #111827; color: #fff; border-radius: 50%;
@@ -194,7 +202,6 @@
       font-size: 24px; transition: transform 0.2s, background 0.3s; z-index: 9999;
     }
     .a11y-toggle:hover { transform: scale(1.1); }
-    /* Estado Ativo */
     .a11y-toggle.ativo { background: #facc15; color: #111827; border-color: #111827; }
 
   </style>
@@ -210,7 +217,6 @@
     <div id="screen-login">
         <div class="login-logo">RENEBANK</div>
         <div class="login-sub">Seu banco, suas regras.</div>
-        
         <form class="login-form" onsubmit="event.preventDefault(); fazerLogin();">
             <input type="text" class="login-input" placeholder="CPF ou Conta" required>
             <input type="password" class="login-input" placeholder="Senha" required>
@@ -243,15 +249,16 @@
           <nav class="actions-row">
             <button id="btn-pix-header" class="action-btn"><div class="action-icon">⚡</div><div class="action-label">Pix</div></button>
             <button id="btn-cartao-header" class="action-btn"><div class="action-icon">💳</div><div class="action-label">Cartão</div></button>
-            <button id="btn-simular-header" class="action-btn"><div class="action-icon">➕</div><div class="action-label">Simular</div></button>
+            <button id="btn-boleto-header" class="action-btn"><div class="action-icon">📄</div><div class="action-label">Pagar</div></button>
           </nav>
         </header>
 
         <main class="app-content">
           <div class="tabs" id="menu-tabs">
-            <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="tab-btn active" data-tab="dashboard">Início</button>
             <button class="tab-btn" data-tab="extrato">Extrato</button>
-            <button class="tab-btn" data-tab="pix">PIX</button>
+            <button class="tab-btn" data-tab="pix">Pix</button>
+            <button class="tab-btn" data-tab="pagar">Pagar</button>
             <button class="tab-btn" data-tab="investimentos">Investimentos</button>
             <button class="tab-btn" data-tab="perfil">Perfil</button>
           </div>
@@ -294,6 +301,27 @@
               <div id="retorno-pix" class="alerta" style="display:none;" aria-live="assertive"></div>
             </div>
           </section>
+
+          <section id="pagar" class="section">
+            <div class="card">
+                <div class="card-header"><h2 class="card-title">Pagar Boleto</h2></div>
+                <div class="form-group">
+                    <label>Código de Barras</label>
+                    <input id="input-boleto" type="number" placeholder="Digite apenas números" />
+                </div>
+                <button class="btn-primary" onclick="buscarBoleto()">Buscar Boleto</button>
+                
+                <div id="area-boleto-confirmacao" class="d-none">
+                    <div class="boleto-result">
+                        <div class="boleto-label">Beneficiário</div>
+                        <div id="boleto-nome" class="boleto-dado">--</div>
+                        <div class="boleto-label">Valor do Pagamento</div>
+                        <div id="boleto-valor" class="boleto-dado">--</div>
+                    </div>
+                    <button class="btn-primary btn-accent" style="margin-top:10px" onclick="pagarBoleto()">Confirmar Pagamento</button>
+                </div>
+            </div>
+          </section>
           
           <section id="investimentos" class="section">
               <div class="card caixinha-card">
@@ -326,7 +354,7 @@
     <div id="overlay-cartao" class="overlay-cartao">
       <div class="overlay-header">
         <button class="overlay-voltar" id="btn-voltar-cartao">← Voltar</button>
-        <div class="overlay-titulo">Cartão Virtual</div>
+        <div class="overlay-titulo" id="titulo-cartao">Cartão Virtual</div>
         <div class="overlay-sub">Cartão online seguro.</div>
       </div>
       <div class="overlay-body">
@@ -343,75 +371,53 @@
   </div>
 
   <script>
-    // --- SISTEMA DE VOZ (TTS) ---
+    // --- SISTEMA DE VOZ ---
     let modoVoz = false;
-
     function falar(texto) {
-        // Só fala se o modo voz estiver ligado
         if (!modoVoz) return;
-        
-        // Verifica se o navegador suporta
         if ('speechSynthesis' in window) {
-            // Cancela falas anteriores para não encavalar
             window.speechSynthesis.cancel();
-            
             const utter = new SpeechSynthesisUtterance(texto);
-            utter.lang = 'pt-BR'; // Português do Brasil
-            utter.rate = 1.1; // Um pouco mais rápido pra não ficar chato
+            utter.lang = 'pt-BR'; utter.rate = 1.1;
             window.speechSynthesis.speak(utter);
         }
     }
 
-    // --- BOTÃO DE ACESSIBILIDADE ---
+    // --- ACESSIBILIDADE ---
     const btnA11y = document.getElementById("btn-a11y");
-    
     btnA11y.addEventListener("click", () => {
-      // 1. Alterna visual
       document.body.classList.toggle("acessibilidade-ativa");
-      
-      // 2. Alterna lógica
       modoVoz = !modoVoz;
-      
       const ativo = document.body.classList.contains("acessibilidade-ativa");
-      if(ativo) {
-        btnA11y.classList.add("ativo");
-        falar("Acessibilidade e voz ativadas. Bem vindo ao Rene Bank.");
-      } else {
-        btnA11y.classList.remove("ativo");
-        // Não fala nada ao desligar, só desliga
-      }
-      btnA11y.blur(); // Tira o foco para não prender a borda
+      if(ativo) { btnA11y.classList.add("ativo"); falar("Voz ativada."); } 
+      else { btnA11y.classList.remove("ativo"); }
+      btnA11y.blur();
     });
 
-    // --- LÓGICA DE LOGIN ---
+    // --- LOGIN ---
     function fazerLogin() {
         const telaLogin = document.getElementById('screen-login');
         const telaLoading = document.getElementById('screen-loading');
         const appMain = document.getElementById('app-main');
-
-        telaLogin.classList.add('d-none');
-        telaLoading.classList.remove('d-none');
-        
-        falar("Entrando na sua conta. Aguarde.");
-
+        telaLogin.classList.add('d-none'); telaLoading.classList.remove('d-none');
+        falar("Entrando. Aguarde.");
         setTimeout(() => {
-            telaLoading.classList.add('d-none');
-            appMain.classList.remove('d-none');
-            falar("Login realizado com sucesso. Bem vindo, Hiro.");
-            
-            gerarDadosCartao();
-            atualizarExtrato();
-            renderizarInvestimentos();
-            atualizarCaixinhaUI();
+            telaLoading.classList.add('d-none'); appMain.classList.remove('d-none');
+            falar("Bem vindo ao Rene Bank, Hiro.");
+            gerarDadosCartao(); atualizarExtrato(); renderizarInvestimentos(); atualizarCaixinhaUI();
         }, 2500);
     }
 
-    // --- ESTADO & DADOS ---
+    // --- DADOS ---
     let mostrarValores = true; 
     let saldoCaixinha = 0.00;
     let saldoContaCorrente = 0;
     const btnEyeHeader = document.getElementById("btn-eye-header");
     const btnEyeExtrato = document.getElementById("btn-eye-extrato");
+
+    // DADOS PARA BOLETO FAKE
+    let boletoPendente = null; // Armazena o boleto gerado
+    const empresasBoleto = ["Companhia de Luz", "Águas do Estado", "Internet Fibra Max", "Condomínio Edifício Solar", "Loja de Skins e Games", "IPVA Detran"];
 
     const transacoes = [
       { id: 1, descricao: "Gasto Lazer", valor: -31.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
@@ -430,9 +436,7 @@
     ];
 
     let chavesPixFavoritas = {
-      mae: "mae@exemplo.com",
-      jorge: "jorge@rene.com",
-      padaria: "11111111000111"
+      mae: "mae@exemplo.com", jorge: "jorge@rene.com", padaria: "11111111000111"
     };
 
     function formatarValor(v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
@@ -442,9 +446,7 @@
         const icone = mostrarValores ? "👁️" : "🙈";
         btnEyeHeader.querySelector('span').textContent = icone;
         btnEyeExtrato.querySelector('span').textContent = icone;
-        
         falar(mostrarValores ? "Valores visíveis." : "Valores ocultos.");
-        
         atualizarExtrato(); renderizarInvestimentos(); atualizarCaixinhaUI(); 
     }
     btnEyeHeader.addEventListener("click", alternarPrivacidade);
@@ -456,16 +458,16 @@
         b.classList.toggle("active", isActive);
       });
       document.querySelectorAll(".section").forEach(sec => { sec.classList.toggle("active", sec.id === tabId); });
-      
-      // Fala o nome da aba
-      if(tabId === 'pix') falar("Área Pix");
-      else if(tabId === 'investimentos') falar("Área de Investimentos");
-      else if(tabId === 'extrato') falar("Seu Extrato");
-      else if(tabId === 'dashboard') falar("Dashboard");
+      if(tabId === 'pagar') falar("Área de pagamento de boletos.");
+      else if(tabId === 'pix') falar("Área Pix.");
+      else if(tabId === 'investimentos') falar("Investimentos.");
+      else if(tabId === 'extrato') falar("Extrato.");
+      else if(tabId === 'dashboard') falar("Início.");
     }
     document.querySelectorAll(".tab-btn").forEach(btn => { btn.addEventListener("click", () => { ativarTab(btn.getAttribute("data-tab")); }); });
 
     document.getElementById("btn-pix-header").addEventListener("click", () => ativarTab("pix"));
+    document.getElementById("btn-boleto-header").addEventListener("click", () => ativarTab("pagar"));
     document.getElementById("btn-cartao-header").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.add("active");
       falar("Cartão Virtual aberto.");
@@ -474,6 +476,58 @@
     document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.remove("active");
     });
+
+    // --- LÓGICA DE BOLETO ---
+    function buscarBoleto() {
+        const codigo = document.getElementById("input-boleto").value;
+        if(codigo.length < 5) {
+            alert("Código de barras inválido.");
+            falar("Código inválido.");
+            return;
+        }
+        
+        // Simulação
+        const nomeAleatorio = empresasBoleto[Math.floor(Math.random() * empresasBoleto.length)];
+        const valorAleatorio = parseFloat((Math.random() * 400 + 50).toFixed(2));
+        
+        boletoPendente = { nome: nomeAleatorio, valor: valorAleatorio };
+        
+        document.getElementById("boleto-nome").textContent = nomeAleatorio;
+        document.getElementById("boleto-valor").textContent = formatarValor(valorAleatorio);
+        document.getElementById("area-boleto-confirmacao").classList.remove("d-none");
+        
+        falar(`Boleto encontrado. ${nomeAleatorio}, valor de ${valorAleatorio} reais.`);
+    }
+
+    function pagarBoleto() {
+        if(!boletoPendente) return;
+        
+        if(boletoPendente.valor > saldoContaCorrente) {
+            alert("Saldo insuficiente!");
+            falar("Saldo insuficiente para pagar este boleto.");
+            return;
+        }
+        
+        transacoes.unshift({
+            id: Date.now(),
+            descricao: `Pgto ${boletoPendente.nome}`,
+            valor: -boletoPendente.valor,
+            data: "Agora",
+            origemServico: "Boleto",
+            categoria: "Contas"
+        });
+        
+        alert("Pagamento realizado com sucesso!");
+        falar("Pagamento realizado com sucesso.");
+        
+        // Limpa
+        document.getElementById("input-boleto").value = "";
+        document.getElementById("area-boleto-confirmacao").classList.add("d-none");
+        boletoPendente = null;
+        
+        atualizarExtrato();
+        ativarTab("extrato");
+    }
 
     function atualizarExtrato() {
       const lista = document.getElementById("lista-transacoes"); lista.innerHTML = "";
