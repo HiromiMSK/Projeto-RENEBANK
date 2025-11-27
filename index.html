@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>ReneBank - App Completo</title>
+  <title>ReneBank - App Completo com Voz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     /* RESET */
@@ -29,28 +29,21 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
-      overflow-x: hidden; /* Evita scroll lateral na página inteira */
+      overflow-x: hidden;
     }
 
     /* --- CELULAR (CONTAINER PRINCIPAL) --- */
     .app-container {
-      position: relative; /* Importante para o Overlay ficar aqui dentro */
+      position: relative;
       background: #f9fafb;
-      
-      /* TAMANHO FIXO PARA FICAR IGUAL CELULAR NO PC */
       width: 390px;
-      height: 844px; /* Altura média iPhone */
-      
-      /* Garante que não estoure em telas pequenas */
+      height: 844px;
       max-width: 100%;
       max-height: 95vh;
-      
       border-radius: 28px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3); /* Sombra mais bonita no PC */
-      
-      overflow: hidden; /* O Segredo: Corta tudo que sair das bordas redondas */
-      border: 8px solid #111827; /* Borda preta simulando a carcaça do celular */
-      
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      border: 8px solid #111827;
       display: flex;
       flex-direction: column;
     }
@@ -193,7 +186,12 @@
     .transacao-card {
       margin-top: 6px; background: #ffffff; border-radius: 14px; padding: 8px 9px;
       border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+      cursor: pointer; /* Indica que é clicável para ler */
     }
+    .transacao-card:focus-visible {
+       background: #f0f9ff; border-color: #2563eb;
+    }
+
     .transacao-left { display: flex; align-items: center; gap: 8px; }
     .transacao-icon {
       width: 30px; height: 30px; border-radius: 999px; background: #eef2ff;
@@ -225,7 +223,8 @@
     .invest-card {
         min-width: 130px; background: #f9fafb; border: 1px solid #e5e7eb;
         border-radius: 16px; padding: 12px; display: flex; flex-direction: column;
-        justify-content: space-between; gap: 8px; flex-shrink: 0; pointer-events: none;
+        justify-content: space-between; gap: 8px; flex-shrink: 0;
+        cursor: pointer;
     }
     .invest-header { display: flex; align-items: center; gap: 8px; }
     .invest-name {
@@ -281,19 +280,17 @@
     }
     .footer-brand { font-weight: 600; color: #1d4ed8; }
 
-    /* --- OVERLAY CARTÃO VIRTUAL (CORRIGIDO) --- */
-    /* Agora ele é absoluto em relação ao .app-container (celular), não à tela */
+    /* --- OVERLAY CARTÃO VIRTUAL --- */
     .overlay-cartao {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%; /* 100% dos 390px do celular */
-      height: 100%; /* 100% da altura do celular */
+      width: 100%;
+      height: 100%;
       background: #f9fafb;
       display: none;
       flex-direction: column;
       z-index: 50;
-      /* Arredondamento igual ao do container pai para não vazar */
       border-radius: 20px; 
     }
     .overlay-cartao.active { display: flex; }
@@ -337,10 +334,9 @@
     }
     .btn-ghost:active { background: #eef2ff; }
 
-    /* --- BOTÃO FLUTUANTE DE ACESSIBILIDADE (FIXED) --- */
-    /* Agora ele fica fixo na tela do monitor/celular, não no container */
+    /* --- BOTÃO FLUTUANTE DE ACESSIBILIDADE --- */
     .a11y-toggle {
-      position: fixed; /* Isso resolve o problema de sumir no PC */
+      position: fixed;
       bottom: 20px;
       right: 20px;
       width: 50px;
@@ -356,7 +352,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       font-size: 24px;
       transition: transform 0.2s;
-      z-index: 9999; /* Fica acima de tudo */
+      z-index: 9999;
     }
     .a11y-toggle:hover {
       transform: scale(1.1);
@@ -366,7 +362,7 @@
 </head>
 <body>
   
-  <button class="a11y-toggle" id="btn-a11y" title="Ativar/Desativar Acessibilidade" aria-label="Ativar modo de acessibilidade">
+  <button class="a11y-toggle" id="btn-a11y" title="Ativar/Desativar Acessibilidade e Voz" aria-label="Ativar modo de acessibilidade">
     ♿
   </button>
 
@@ -600,19 +596,39 @@
       </div>
     </div>
 
-  </div> <script>
+  </div>
+
+  <script>
+    // --- LÓGICA DE VOZ (WEB SPEECH API) ---
+    function falarTexto(texto) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Para não encavalar
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = texto;
+        msg.lang = 'pt-BR'; 
+        msg.rate = 1.2; 
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
     // --- LÓGICA DO BOTÃO DE ACESSIBILIDADE ---
     const btnA11y = document.getElementById("btn-a11y");
-    
+    let modoVozAtivo = false;
+
     btnA11y.addEventListener("click", () => {
       document.body.classList.toggle("acessibilidade-ativa");
-      const ativo = document.body.classList.contains("acessibilidade-ativa");
-      if(ativo) {
+      modoVozAtivo = document.body.classList.contains("acessibilidade-ativa");
+      
+      if(modoVozAtivo) {
         btnA11y.setAttribute("aria-pressed", "true");
-        // Simples feedback visual/sonoro fake
-        console.log("Acessibilidade Ativada");
+        btnA11y.style.background = "#facc15";
+        btnA11y.style.color = "#000";
+        falarTexto("Modo de voz ativado. O ReneBank vai ler as informações para você.");
       } else {
         btnA11y.setAttribute("aria-pressed", "false");
+        btnA11y.style.background = "#111827";
+        btnA11y.style.color = "#fff";
+        window.speechSynthesis.cancel();
       }
     });
 
@@ -663,6 +679,8 @@
         btnEyeHeader.setAttribute("aria-label", labelTexto);
         btnEyeExtrato.setAttribute("aria-label", labelTexto);
 
+        if(modoVozAtivo) falarTexto(mostrarValores ? "Valores visíveis." : "Valores ocultos.");
+
         const icone = mostrarValores ? "👁️" : "🙈";
         btnEyeHeader.querySelector('span').textContent = icone;
         btnEyeExtrato.querySelector('span').textContent = icone;
@@ -677,6 +695,10 @@
 
     // --- TABS ---
     function ativarTab(tabId) {
+      if(modoVozAtivo) {
+          const nomes = { 'dashboard': 'Início', 'extrato': 'Extrato', 'pix': 'Pix', 'investimentos': 'Investimentos', 'perfil': 'Perfil' };
+          falarTexto("Aba " + (nomes[tabId] || tabId));
+      }
       document.querySelectorAll(".tab-btn").forEach(b => {
         const isActive = b.getAttribute("data-tab") === tabId;
         b.classList.toggle("active", isActive);
@@ -698,12 +720,14 @@
     document.getElementById("btn-cartao-header").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.add("active");
       document.getElementById("btn-voltar-cartao").focus();
+      if(modoVozAtivo) falarTexto("Cartão virtual aberto.");
     });
     document.getElementById("btn-simular-header").addEventListener("click", simularMovimentacao);
 
     document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.remove("active");
       document.getElementById("btn-cartao-header").focus(); 
+      if(modoVozAtivo) falarTexto("Voltou.");
     });
 
     // --- ATUALIZAR EXTRATO ---
@@ -726,6 +750,11 @@
 
         const card = document.createElement("div");
         card.className = "transacao-card";
+        // Habilita clique para ouvir
+        card.setAttribute("tabindex", "0"); 
+        card.onclick = () => {
+            if(modoVozAtivo) falarTexto(`${t.descricao}, valor de ${formatarValor(Math.abs(t.valor))}.`);
+        };
 
         const left = document.createElement("div");
         left.className = "transacao-left";
@@ -826,12 +855,14 @@
         const valor = parseFloat(input.value);
 
         if (!valor || valor <= 0) {
+            if(modoVozAtivo) falarTexto("Digite um valor válido.");
             alert("Digite um valor válido.");
             return;
         }
 
         if (tipo === 'depositar') {
             if (valor > saldoContaCorrente) {
+                if(modoVozAtivo) falarTexto("Saldo insuficiente.");
                 alert("Saldo insuficiente na conta corrente!");
                 return;
             }
@@ -844,10 +875,13 @@
                 categoria: "Caixinha"
             });
             saldoCaixinha += valor;
-            alert(`Sucesso! Você guardou ${formatarValor(valor)}.`);
+            const msg = `Guardou ${formatarValor(valor)}.`;
+            if(modoVozAtivo) falarTexto(msg);
+            alert("Sucesso! " + msg);
 
         } else if (tipo === 'resgatar') {
             if (valor > saldoCaixinha) {
+                if(modoVozAtivo) falarTexto("Saldo insuficiente na caixinha.");
                 alert("Saldo insuficiente na caixinha!");
                 return;
             }
@@ -860,7 +894,9 @@
                 origemServico: "Investimento",
                 categoria: "Caixinha"
             });
-            alert(`Sucesso! Você resgatou ${formatarValor(valor)}.`);
+            const msg = `Resgatou ${formatarValor(valor)}.`;
+            if(modoVozAtivo) falarTexto(msg);
+            alert("Sucesso! " + msg);
         }
 
         input.value = "";
@@ -870,13 +906,17 @@
 
     function simularRendimentoCaixinha() {
         if(saldoCaixinha <= 0) {
+            if(modoVozAtivo) falarTexto("Caixinha vazia.");
             alert("Guarde dinheiro primeiro para ver render!");
             return;
         }
         const rendimento = saldoCaixinha * 0.01; 
         saldoCaixinha += rendimento;
         atualizarCaixinhaUI();
-        alert(`🤑 O dinheiro rendeu! + ${formatarValor(rendimento)}`);
+        
+        const msg = `Rendeu ${formatarValor(rendimento)}`;
+        if(modoVozAtivo) falarTexto(msg);
+        alert(`🤑 ${msg}`);
     }
 
     function renderizarInvestimentos() {
@@ -886,6 +926,10 @@
         investimentos.forEach(item => {
             const card = document.createElement("div");
             card.className = "invest-card";
+            card.style.pointerEvents = "auto"; 
+            card.onclick = () => {
+                if(modoVozAtivo) falarTexto(`${item.nome}, valor ${formatarValor(item.valor)}.`);
+            };
             
             const tickerSigla = item.ticker.split(":")[1] || "???";
             
@@ -994,7 +1038,9 @@
           origemServico: "PIX",
           categoria: "Receita"
         });
-        alert(`Simulação: + ${formatarValor(valor)}`);
+        const msg = `Recebeu ${formatarValor(valor)}`;
+        if(modoVozAtivo) falarTexto(msg);
+        alert(msg);
       } else {
         const valor = +(Math.random() * 80 + 20).toFixed(2);
         transacoes.unshift({
@@ -1005,7 +1051,9 @@
           origemServico: "Lazer",
           categoria: "Lazer"
         });
-        alert(`Simulação: - ${formatarValor(valor)}`);
+        const msg = `Gastou ${formatarValor(valor)}`;
+        if(modoVozAtivo) falarTexto(msg);
+        alert(msg);
       }
       atualizarExtrato();
       ativarTab("extrato");
@@ -1038,6 +1086,8 @@
       const retorno = document.getElementById("retorno-pix");
       retorno.style.display = 'block';
       retorno.textContent = "Sucesso! PIX enviado.";
+      
+      if(modoVozAtivo) falarTexto("Pix enviado com sucesso.");
       
       atualizarExtrato();
       ativarTab("extrato");
