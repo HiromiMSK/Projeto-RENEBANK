@@ -109,10 +109,9 @@
       font-size: 26px;
       font-weight: 700;
       color: #111827;
-      min-height: 32px; /* Evita pulo de layout quando esconde */
+      min-height: 32px;
     }
     
-    /* Classe para esconder valores (blur opcional, aqui usaremos bolinhas) */
     .valor-oculto {
       letter-spacing: 2px;
       font-size: 20px;
@@ -180,15 +179,23 @@
       gap: 10px;
     }
 
+    /* TABS (Draggable) */
     .tabs {
       display: flex;
       gap: 6px;
       margin-bottom: 4px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none; 
+      cursor: grab; 
+      user-select: none;
     }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs.active { cursor: grabbing; cursor: -webkit-grabbing; }
 
     .tab-btn {
-      flex: 1;
-      padding: 8px;
+      flex: none; 
+      padding: 8px 16px;
       border-radius: 999px;
       border: none;
       background: #e5e7eb;
@@ -197,6 +204,8 @@
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
       font-weight: 500;
+      white-space: nowrap;
+      pointer-events: auto; /* Mantém clique funcionando */
     }
 
     .tab-btn.active {
@@ -223,6 +232,29 @@
       border: 1px solid #e5e7eb;
     }
 
+    /* Estilo Especial para a Caixinha */
+    .card.caixinha-card {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+        color: #fff;
+        border: none;
+    }
+    
+    .card.caixinha-card .card-title, 
+    .card.caixinha-card .card-header,
+    .card.caixinha-card label {
+        color: #fff;
+    }
+    
+    .card.caixinha-card input {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+    }
+    
+    .card.caixinha-card input::placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -244,6 +276,9 @@
       color: #1d4ed8;
       font-weight: 500;
     }
+    
+    .tag.risco { background: #fee2e2; color: #b91c1c; }
+    .tag.render { background: #4ade80; color: #064e3b; }
 
     .alerta-ia {
       margin-top: 6px;
@@ -284,6 +319,14 @@
       justify-content: center;
       color: #4f46e5;
       font-size: 14px;
+      flex-shrink: 0;
+    }
+    
+    .invest-icon {
+        background: #111827;
+        color: #fff;
+        font-weight: bold;
+        font-size: 10px;
     }
 
     .transacao-info {
@@ -314,13 +357,58 @@
       font-weight: 700;
       font-size: 13px;
     }
+    .transacao-valor.debito { color: #b91c1c; }
+    .transacao-valor.credito { color: #15803d; }
+    
+    .variacao { font-size: 10px; margin-top: 2px; }
+    .variacao.up { color: #16a34a; }
+    .variacao.down { color: #dc2626; }
 
-    .transacao-valor.debito {
-      color: #b91c1c;
+    /* CARROSSEL HORIZONTAL DE INVESTIMENTOS */
+    .horizontal-scroll {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scrollbar-width: none; 
+        cursor: grab; 
+        user-select: none;
+    }
+    .horizontal-scroll::-webkit-scrollbar { display: none; }
+    .horizontal-scroll.active { cursor: grabbing; cursor: -webkit-grabbing; }
+
+    .invest-card {
+        min-width: 130px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 8px;
+        flex-shrink: 0;
+        pointer-events: none; 
     }
 
-    .transacao-valor.credito {
-      color: #15803d;
+    .invest-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .invest-name {
+        font-weight: 600;
+        font-size: 12px;
+        color: #111827;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .invest-ticker {
+        font-size: 10px;
+        color: #6b7280;
     }
 
     /* Resumo por categoria */
@@ -385,6 +473,21 @@
       font-size: 13px;
       cursor: pointer;
       margin-top: 4px;
+    }
+    
+    .btn-action-group {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .btn-accent {
+        background: #4ade80;
+        color: #064e3b;
+    }
+    
+    .btn-secondary {
+        background: rgba(255,255,255,0.2);
+        color: #fff;
     }
 
     .hint {
@@ -514,7 +617,6 @@
       font-size: 20px;
       letter-spacing: 0.18em;
       margin-bottom: 16px;
-      /* Fonte monoespaçada fica legal pra cartão */
       font-family: 'Courier New', Courier, monospace; 
       font-weight: bold;
     }
@@ -618,10 +720,11 @@
       </div>
 
       <main class="app-content">
-        <div class="tabs">
+        <div class="tabs" id="menu-tabs">
           <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
           <button class="tab-btn" data-tab="extrato">Extrato</button>
           <button class="tab-btn" data-tab="pix">PIX / Boleto</button>
+          <button class="tab-btn" data-tab="investimentos">Investimentos</button>
           <button class="tab-btn" data-tab="perfil">Perfil</button>
         </div>
 
@@ -681,22 +784,55 @@
             <div class="hint">Apenas simulação visual para o MVP.</div>
             <div id="retorno-pix" class="alerta" style="display:none;"></div>
           </div>
+        </section>
+        
+        <section id="investimentos" class="section">
+            <div class="card caixinha-card">
+                <div class="card-header">
+                    <span class="card-title">Caixinha Turbo</span>
+                    <span class="tag render">1% a.m.</span>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <span style="font-size: 12px; opacity: 0.8;">Saldo guardado</span>
+                    <div id="valor-caixinha" style="font-size: 24px; font-weight: bold;">R$ 0,00</div>
+                </div>
+                <div class="form-group">
+                    <input id="input-caixinha" type="number" placeholder="Valor (R$)" />
+                </div>
+                <div class="btn-action-group">
+                    <button class="btn-primary btn-accent" onclick="operarCaixinha('depositar')">Guardar</button>
+                    <button class="btn-primary btn-secondary" onclick="operarCaixinha('resgatar')">Resgatar</button>
+                </div>
+                <button class="btn-ghost" style="color: #a5b4fc; margin-top: 8px; font-size: 11px;" onclick="simularRendimentoCaixinha()">
+                    ✨ Simular 1 mês de rendimento
+                </button>
+            </div>
 
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Pagamento de boleto</span>
+            <div class="card">
+                <div class="card-header">
+                  <span class="card-title">Minha Carteira</span>
+                  <span class="tag risco">Risco: E-Sports</span>
+                </div>
+                <div id="lista-investimentos" class="horizontal-scroll">
+                    </div>
+                <p class="hint">Valores atualizados com base no "hype" de mercado.</p>
             </div>
-            <div class="form-group">
-              <label>Código de barras</label>
-              <input type="text" placeholder="00000.00000 00000.000000 0 00000000000000" />
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Ofertas Públicas (IPO)</span>
+                </div>
+                <div class="transacao-card">
+                    <div class="transacao-left">
+                        <div class="transacao-icon invest-icon">WOR</div>
+                        <div class="transacao-info">
+                            <span class="transacao-descricao">Worlds 2025 Fund</span>
+                            <span class="transacao-meta">Fundo Multimercado</span>
+                        </div>
+                    </div>
+                    <button class="chip" style="border:none; cursor:pointer;">Ver</button>
+                </div>
             </div>
-            <div class="form-group">
-              <label>Valor</label>
-              <input type="number" step="0.01" placeholder="0,00" />
-            </div>
-            <button class="btn-primary">Simular pagamento</button>
-            <div class="hint">Integrações reais podem usar APIs bancárias.</div>
-          </div>
         </section>
 
         <section id="perfil" class="section">
@@ -713,16 +849,6 @@
               <span class="chip">Meta: reduzir Lazer em 10%</span>
               <span class="chip">Sugestão: criar reserva de emergência</span>
             </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Preferências e alertas</span>
-            </div>
-            <p class="hint">
-              O usuário pode definir limites por categoria, ativar alertas
-              quando ultrapassar o orçamento e receber recomendações automáticas.
-            </p>
           </div>
         </section>
       </main>
@@ -777,8 +903,11 @@
   </div>
 
   <script>
-    // --- ESTADO DE PRIVACIDADE ---
-    let mostrarValores = true; // Começa exibindo
+    // --- ESTADO ---
+    let mostrarValores = true; 
+    let saldoCaixinha = 0.00; // Começa zerada
+    let saldoContaCorrente = 0; // Calculado no runtime
+
     const btnEye = document.getElementById("btn-eye");
 
     // --- DADOS ---
@@ -789,6 +918,15 @@
       { id: 4, descricao: "Supermercado Bom Preço", valor: -230.50, data: "Ontem", origemServico: "Mercado", categoria: "Mercado" },
       { id: 5, descricao: "Energia Elétrica", valor: -210.30, data: "Esta semana", origemServico: "Boleto", categoria: "Contas Fixas" },
       { id: 6, descricao: "Recebimento", valor: 3500.00, data: "Este mês", origemServico: "Salário", categoria: "Receita" }
+    ];
+
+    const investimentos = [
+        { ticker: "LCK:T1", nome: "T1 Esports", valor: 1250.40, variacao: 15.2 },
+        { ticker: "CBLOL:PNG", nome: "paiN Gaming", valor: 850.20, variacao: 5.4 },
+        { ticker: "CBLOL:FUR", nome: "Furia Esports", valor: 420.00, variacao: -1.2 },
+        { ticker: "CBLOL:LLL", nome: "LOUD", valor: 780.90, variacao: 0.8 },
+        { ticker: "LEC:G2", nome: "G2 Esports", valor: 650.10, variacao: -3.5 },
+        { ticker: "LPL:BLG", nome: "Bilibili Gaming", valor: 900.50, variacao: 2.1 }
     ];
 
     let chavesPixFavoritas = {
@@ -804,24 +942,13 @@
       return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 
-    // Função que retorna o valor ou "••••" dependendo do modo privacidade
-    function valorVisual(v) {
-        if (mostrarValores) {
-            return formatarValor(v);
-        } else {
-            return "••••";
-        }
-    }
-
     // --- LÓGICA DO OLHO (PRIVACIDADE) ---
     btnEye.addEventListener("click", () => {
-        mostrarValores = !mostrarValores; // Inverte
-        
-        // Troca ícone
+        mostrarValores = !mostrarValores; 
         btnEye.textContent = mostrarValores ? "👁️" : "🙈";
-        
-        // Atualiza a tela
         atualizarExtrato();
+        renderizarInvestimentos(); 
+        atualizarCaixinhaUI(); // Atualiza a caixinha
     });
 
     // --- TABS ---
@@ -847,12 +974,11 @@
     });
     document.getElementById("btn-simular-header").addEventListener("click", simularMovimentacao);
 
-    // --- VOLTAR CARTÃO ---
     document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.remove("active");
     });
 
-    // --- ATUALIZAR TELA ---
+    // --- ATUALIZAR EXTRATO E SALDO GERAL ---
     function atualizarExtrato() {
       const lista = document.getElementById("lista-transacoes");
       lista.innerHTML = "";
@@ -862,7 +988,6 @@
       let totalReceitas = 0;
       const resumo = {};
 
-      // Cálculos
       transacoes.forEach(t => {
         saldo += t.valor;
         if (t.valor < 0) totalGastos += Math.abs(t.valor);
@@ -871,8 +996,7 @@
         if (!resumo[t.categoria]) resumo[t.categoria] = 0;
         resumo[t.categoria] += Math.abs(t.valor);
 
-        // Renderiza lista (Transações individuais sempre mostram valor por enquanto, 
-        // mas você pode esconder aqui também se quiser)
+        // Render card
         const card = document.createElement("div");
         card.className = "transacao-card";
 
@@ -902,8 +1026,6 @@
 
         const valor = document.createElement("div");
         valor.className = "transacao-valor " + (t.valor < 0 ? "debito" : "credito");
-        // Aqui também aplicamos o olho? Geralmente extrato mostra, mas saldo esconde. 
-        // Vamos manter visível no extrato detalhado, mas esconder o "Resumo".
         valor.textContent = (t.valor < 0 ? "- " : "+ ") + formatarValor(Math.abs(t.valor));
 
         const categoriaPill = document.createElement("span");
@@ -917,7 +1039,9 @@
         lista.appendChild(card);
       });
 
-      // --- ATUALIZA HEADER COM PRIVACIDADE ---
+      // Atualiza variável global de saldo para uso na caixinha
+      saldoContaCorrente = saldo;
+
       const elSaldo = document.getElementById("saldo-valor");
       const elGasto = document.getElementById("gasto-mes");
       const elRecebido = document.getElementById("recebido-mes");
@@ -925,34 +1049,27 @@
       if (mostrarValores) {
           elSaldo.textContent = formatarValor(saldo);
           elSaldo.classList.remove("valor-oculto");
-          
           elGasto.textContent = formatarValor(totalGastos);
           elRecebido.textContent = formatarValor(totalReceitas);
       } else {
           elSaldo.textContent = "••••";
           elSaldo.classList.add("valor-oculto");
-          
           elGasto.textContent = "••••";
           elRecebido.textContent = "••••";
       }
 
-      // --- RESUMO CATEGORIAS (Também esconde se quiser) ---
       const resumoDiv = document.getElementById("resumo-categorias");
       resumoDiv.innerHTML = "";
       Object.keys(resumo).forEach(cat => {
         if (cat === "Receita") return;
         const box = document.createElement("div");
         box.className = "resumo-item";
-
         const label = document.createElement("div");
         label.className = "resumo-label";
         label.textContent = cat;
-
         const valor = document.createElement("div");
         valor.className = "resumo-valor";
-        // Vamos esconder aqui também se a privacidade estiver ativa
         valor.textContent = mostrarValores ? formatarValor(resumo[cat]) : "••••";
-
         box.appendChild(label);
         box.appendChild(valor);
         resumoDiv.appendChild(box);
@@ -960,6 +1077,165 @@
 
       gerarInsights(resumo);
     }
+
+    // --- LÓGICA DA CAIXINHA (NOVO) ---
+    function atualizarCaixinhaUI() {
+        const elVal = document.getElementById("valor-caixinha");
+        if(mostrarValores) {
+            elVal.textContent = formatarValor(saldoCaixinha);
+        } else {
+            elVal.textContent = "••••";
+        }
+    }
+
+    function operarCaixinha(tipo) {
+        const input = document.getElementById("input-caixinha");
+        const valor = parseFloat(input.value);
+
+        if (!valor || valor <= 0) {
+            alert("Digite um valor válido.");
+            return;
+        }
+
+        if (tipo === 'depositar') {
+            if (valor > saldoContaCorrente) {
+                alert("Saldo insuficiente na conta corrente!");
+                return;
+            }
+            // Tira da conta corrente
+            transacoes.unshift({
+                id: transacoes.length + 1,
+                descricao: "Guardado na Caixinha",
+                valor: -valor,
+                data: "Agora",
+                origemServico: "Investimento",
+                categoria: "Caixinha"
+            });
+            // Adiciona na caixinha
+            saldoCaixinha += valor;
+            alert(`Sucesso! Você guardou ${formatarValor(valor)}.`);
+
+        } else if (tipo === 'resgatar') {
+            if (valor > saldoCaixinha) {
+                alert("Saldo insuficiente na caixinha!");
+                return;
+            }
+            // Tira da caixinha
+            saldoCaixinha -= valor;
+            // Põe na conta corrente
+            transacoes.unshift({
+                id: transacoes.length + 1,
+                descricao: "Resgate da Caixinha",
+                valor: valor,
+                data: "Agora",
+                origemServico: "Investimento",
+                categoria: "Caixinha"
+            });
+            alert(`Sucesso! Você resgatou ${formatarValor(valor)}.`);
+        }
+
+        input.value = "";
+        atualizarExtrato(); // Atualiza saldo principal
+        atualizarCaixinhaUI(); // Atualiza saldo caixinha
+    }
+
+    function simularRendimentoCaixinha() {
+        if(saldoCaixinha <= 0) {
+            alert("Guarde dinheiro primeiro para ver render!");
+            return;
+        }
+        // Simula 1% de rendimento
+        const rendimento = saldoCaixinha * 0.01; 
+        saldoCaixinha += rendimento;
+        
+        atualizarCaixinhaUI();
+        alert(`🤑 O dinheiro rendeu! + ${formatarValor(rendimento)}`);
+    }
+
+    // --- RENDERIZAR CARROSSEL INVESTIMENTOS ---
+    function renderizarInvestimentos() {
+        const divLista = document.getElementById("lista-investimentos");
+        divLista.innerHTML = "";
+        
+        investimentos.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "invest-card";
+            
+            const tickerSigla = item.ticker.split(":")[1] || "???";
+            
+            const header = document.createElement("div");
+            header.className = "invest-header";
+            
+            const icon = document.createElement("div");
+            icon.className = "transacao-icon invest-icon";
+            icon.textContent = tickerSigla;
+            
+            const ticker = document.createElement("span");
+            ticker.className = "invest-ticker";
+            ticker.textContent = item.ticker;
+
+            header.appendChild(icon);
+            header.appendChild(ticker);
+            
+            const body = document.createElement("div");
+            
+            const nome = document.createElement("div");
+            nome.className = "invest-name";
+            nome.textContent = item.nome;
+            
+            const valorEl = document.createElement("div");
+            valorEl.className = "transacao-valor";
+            valorEl.style.fontSize = "14px";
+            valorEl.style.marginTop = "4px";
+            valorEl.textContent = mostrarValores ? formatarValor(item.valor) : "••••";
+            
+            const varEl = document.createElement("div");
+            const symbol = item.variacao >= 0 ? "▲" : "▼";
+            const cssClass = item.variacao >= 0 ? "up" : "down";
+            
+            varEl.className = "variacao " + cssClass;
+            varEl.textContent = `${symbol} ${Math.abs(item.variacao)}%`;
+            
+            body.appendChild(nome);
+            body.appendChild(valorEl);
+            if(mostrarValores) body.appendChild(varEl);
+            
+            card.appendChild(header);
+            card.appendChild(body);
+            
+            divLista.appendChild(card);
+        });
+    }
+
+    // --- DRAG TO SCROLL (GENÉRICO) ---
+    const draggables = document.querySelectorAll('.horizontal-scroll, .tabs');
+    draggables.forEach(slider => {
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('active');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      });
+      slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.classList.remove('active');
+      });
+      slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.classList.remove('active');
+      });
+      slider.addEventListener('mousemove', (e) => {
+        if(!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2;
+        slider.scrollLeft = scrollLeft - walk;
+      });
+    });
 
     function gerarInsights(resumo) {
       const alerta = document.getElementById("alerta-dashboard");
@@ -972,18 +1248,14 @@
           maiorCat = cat;
         }
       });
-
       if (!maiorCat) {
         alerta.textContent = "Ainda não há dados suficientes para gerar um alerta inteligente.";
         return;
       }
-      
-      // Se tiver oculto, não mostra o valor no texto do insight
       const valTexto = mostrarValores ? formatarValor(maiorValor) : "um valor alto";
       alerta.textContent = `IA ReneBank · Alerta: você gastou ${valTexto} com ${maiorCat}. Sugerimos reduzir.`;
     }
 
-    // --- SIMULAÇÃO ---
     function simularMovimentacao() {
       const ehReceita = Math.random() < 0.5;
       if (ehReceita) {
@@ -1013,7 +1285,6 @@
       ativarTab("extrato");
     }
 
-    // --- PIX LOGIC ---
     const selectDest = document.getElementById("destinatario-pix");
     selectDest.addEventListener("change", (e) => {
       const chaveInput = document.getElementById("chave-pix");
@@ -1027,7 +1298,6 @@
     function simularPix() {
       const val = parseFloat(document.getElementById("valor-pix").value || "0");
       if(val <= 0) return alert("Valor inválido");
-      
       transacoes.unshift({
           id: transacoes.length + 1,
           descricao: "PIX Enviado",
@@ -1042,32 +1312,23 @@
       ativarTab("extrato");
     }
 
-    // --- CARTÃO VIRTUAL (NOVO CÓDIGO) ---
     function gerarDadosCartao() {
-      // 1. Gera CVV (3 dígitos)
       const cvv = Math.floor(100 + Math.random() * 900);
       document.getElementById("cvv-dinamico").textContent = cvv;
-
-      // 2. Gera Número do Cartão (16 dígitos aleatórios com espaço)
-      let numero = "";
-      // Prefixo fixo 5500 só pra parecer cartão de verdade
-      numero += "5500 "; 
-      
-      // Gera mais 3 blocos de 4 números
+      let numero = "5500 "; 
       for(let i=0; i<3; i++) {
         let bloco = Math.floor(1000 + Math.random() * 9000);
         numero += bloco + " ";
       }
-      
       document.getElementById("numero-cartao").textContent = numero.trim();
     }
-
-    // Atrela a função ao botão
     document.getElementById("btn-atualizar-cartao").addEventListener("click", gerarDadosCartao);
 
     // Inicialização
-    gerarDadosCartao(); // Já gera um número ao carregar
+    gerarDadosCartao();
     atualizarExtrato();
+    renderizarInvestimentos();
+    atualizarCaixinhaUI();
   </script>
 </body>
 </html>
