@@ -90,7 +90,7 @@
       color: #6b7280;
     }
 
-    /* Botão do Olho */
+    /* Botão do Olho (Usado no Header e no Extrato) */
     .btn-eye {
       background: none;
       border: none;
@@ -99,6 +99,9 @@
       color: #6b7280;
       padding: 2px;
       transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .btn-eye:hover {
       color: #111827;
@@ -114,8 +117,8 @@
     
     .valor-oculto {
       letter-spacing: 2px;
-      font-size: 20px;
-      color: #9ca3af;
+      font-size: inherit; /* Herda tamanho do pai */
+      color: #9ca3af !important;
     }
 
     .saldo-sub {
@@ -205,7 +208,7 @@
       transition: background 0.2s, color 0.2s;
       font-weight: 500;
       white-space: nowrap;
-      pointer-events: auto; /* Mantém clique funcionando */
+      pointer-events: auto;
     }
 
     .tab-btn.active {
@@ -253,6 +256,13 @@
     
     .card.caixinha-card input::placeholder {
         color: rgba(255,255,255,0.5);
+    }
+    
+    /* Header do Card com controles */
+    .card-header-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .card-header {
@@ -690,7 +700,7 @@
         <div class="saldo-card">
           <div class="saldo-header-row">
             <div class="saldo-label">Saldo disponível</div>
-            <button id="btn-eye" class="btn-eye" title="Mostrar/Ocultar valores">
+            <button id="btn-eye-header" class="btn-eye" title="Mostrar/Ocultar valores">
                 👁️
             </button>
           </div>
@@ -746,7 +756,12 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Extrato inteligente</span>
-              <span class="tag">auto-categorizado</span>
+              <div class="card-header-controls">
+                  <button id="btn-eye-extrato" class="btn-eye" title="Mostrar/Ocultar valores">
+                    👁️
+                  </button>
+                  <span class="tag">auto-categorizado</span>
+              </div>
             </div>
             <div id="lista-transacoes"></div>
           </div>
@@ -905,10 +920,12 @@
   <script>
     // --- ESTADO ---
     let mostrarValores = true; 
-    let saldoCaixinha = 0.00; // Começa zerada
-    let saldoContaCorrente = 0; // Calculado no runtime
+    let saldoCaixinha = 0.00;
+    let saldoContaCorrente = 0;
 
-    const btnEye = document.getElementById("btn-eye");
+    // Elementos de controle
+    const btnEyeHeader = document.getElementById("btn-eye-header");
+    const btnEyeExtrato = document.getElementById("btn-eye-extrato");
 
     // --- DADOS ---
     const transacoes = [
@@ -943,13 +960,23 @@
     }
 
     // --- LÓGICA DO OLHO (PRIVACIDADE) ---
-    btnEye.addEventListener("click", () => {
+    // Agora temos 2 botões que fazem a mesma coisa
+    function alternarPrivacidade() {
         mostrarValores = !mostrarValores; 
-        btnEye.textContent = mostrarValores ? "👁️" : "🙈";
+        
+        // Atualiza ícones dos DOIS botões
+        const icone = mostrarValores ? "👁️" : "🙈";
+        btnEyeHeader.textContent = icone;
+        btnEyeExtrato.textContent = icone;
+
+        // Atualiza toda a tela
         atualizarExtrato();
         renderizarInvestimentos(); 
-        atualizarCaixinhaUI(); // Atualiza a caixinha
-    });
+        atualizarCaixinhaUI(); 
+    }
+
+    btnEyeHeader.addEventListener("click", alternarPrivacidade);
+    btnEyeExtrato.addEventListener("click", alternarPrivacidade);
 
     // --- TABS ---
     function ativarTab(tabId) {
@@ -1026,7 +1053,15 @@
 
         const valor = document.createElement("div");
         valor.className = "transacao-valor " + (t.valor < 0 ? "debito" : "credito");
-        valor.textContent = (t.valor < 0 ? "- " : "+ ") + formatarValor(Math.abs(t.valor));
+        
+        // AGORA VERIFICA PRIVACIDADE NO EXTRATO TAMBÉM
+        if (mostrarValores) {
+            valor.textContent = (t.valor < 0 ? "- " : "+ ") + formatarValor(Math.abs(t.valor));
+            valor.classList.remove("valor-oculto");
+        } else {
+            valor.textContent = "••••";
+            valor.classList.add("valor-oculto");
+        }
 
         const categoriaPill = document.createElement("span");
         categoriaPill.className = "categoria-pill";
@@ -1039,7 +1074,6 @@
         lista.appendChild(card);
       });
 
-      // Atualiza variável global de saldo para uso na caixinha
       saldoContaCorrente = saldo;
 
       const elSaldo = document.getElementById("saldo-valor");
@@ -1078,7 +1112,7 @@
       gerarInsights(resumo);
     }
 
-    // --- LÓGICA DA CAIXINHA (NOVO) ---
+    // --- LÓGICA DA CAIXINHA ---
     function atualizarCaixinhaUI() {
         const elVal = document.getElementById("valor-caixinha");
         if(mostrarValores) {
@@ -1102,7 +1136,6 @@
                 alert("Saldo insuficiente na conta corrente!");
                 return;
             }
-            // Tira da conta corrente
             transacoes.unshift({
                 id: transacoes.length + 1,
                 descricao: "Guardado na Caixinha",
@@ -1111,7 +1144,6 @@
                 origemServico: "Investimento",
                 categoria: "Caixinha"
             });
-            // Adiciona na caixinha
             saldoCaixinha += valor;
             alert(`Sucesso! Você guardou ${formatarValor(valor)}.`);
 
@@ -1120,9 +1152,7 @@
                 alert("Saldo insuficiente na caixinha!");
                 return;
             }
-            // Tira da caixinha
             saldoCaixinha -= valor;
-            // Põe na conta corrente
             transacoes.unshift({
                 id: transacoes.length + 1,
                 descricao: "Resgate da Caixinha",
@@ -1135,8 +1165,8 @@
         }
 
         input.value = "";
-        atualizarExtrato(); // Atualiza saldo principal
-        atualizarCaixinhaUI(); // Atualiza saldo caixinha
+        atualizarExtrato(); 
+        atualizarCaixinhaUI(); 
     }
 
     function simularRendimentoCaixinha() {
@@ -1144,10 +1174,8 @@
             alert("Guarde dinheiro primeiro para ver render!");
             return;
         }
-        // Simula 1% de rendimento
         const rendimento = saldoCaixinha * 0.01; 
         saldoCaixinha += rendimento;
-        
         atualizarCaixinhaUI();
         alert(`🤑 O dinheiro rendeu! + ${formatarValor(rendimento)}`);
     }
@@ -1207,7 +1235,7 @@
         });
     }
 
-    // --- DRAG TO SCROLL (GENÉRICO) ---
+    // --- DRAG TO SCROLL ---
     const draggables = document.querySelectorAll('.horizontal-scroll, .tabs');
     draggables.forEach(slider => {
       let isDown = false;
