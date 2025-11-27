@@ -2,20 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>ReneBank - App Completo</title>
+  <title>ReneBank - Com Voz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     /* RESET */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      outline: none;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; outline: none; }
 
-    /* ACESSIBILIDADE: Foco visível */
-    /* Só aplica a borda grossa se a classe estiver no corpo */
+    /* ACESSIBILIDADE VISUAL */
     body.acessibilidade-ativa *:focus-visible {
       outline: 4px solid #facc15 !important;
       outline-offset: 2px;
@@ -33,55 +26,49 @@
       overflow-x: hidden;
     }
 
-    /* CELULAR (CONTAINER) */
+    /* CELULAR */
     .app-container {
       position: relative;
       background: #f9fafb;
       width: 390px;
-      height: 844px; /* Altura fixa */
+      height: 844px;
       max-width: 100%;
       max-height: 95vh;
       border-radius: 28px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      overflow: hidden; /* Corta o que passar */
+      overflow: hidden;
       border: 8px solid #111827;
       display: flex;
       flex-direction: column;
     }
 
-    /* UTILITÁRIOS */
     .d-none { display: none !important; }
 
     /* TELA LOGIN */
     #screen-login {
         position: absolute; inset: 0; background: linear-gradient(145deg, #0f172a, #1e3a8a);
-        z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        padding: 30px; color: white;
+        z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; color: white;
     }
     .login-logo { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: 2px; }
     .login-sub { font-size: 14px; opacity: 0.8; margin-bottom: 40px; }
     .login-form { width: 100%; display: flex; flex-direction: column; gap: 16px; }
     .login-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 14px; border-radius: 12px; color: white; font-size: 16px; }
     .login-input::placeholder { color: rgba(255,255,255,0.5); }
-    .login-input:focus { background: rgba(255,255,255,0.2); border-color: #facc15; }
-    .btn-login { background: #facc15; color: #111827; font-weight: bold; padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer; margin-top: 10px; transition: transform 0.1s; }
+    .btn-login { background: #facc15; color: #111827; font-weight: bold; padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer; margin-top: 10px; }
     .btn-login:active { transform: scale(0.98); }
 
-    /* TELA LOADING */
+    /* LOADING R */
     #screen-loading {
         position: absolute; inset: 0; background: #0f172a; z-index: 99;
         display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
     }
-    .loader-r {
-        font-size: 80px; font-weight: 900; color: #facc15; font-family: sans-serif; margin-bottom: 20px;
-        animation: pulse-r 1.5s infinite ease-in-out;
-    }
+    .loader-r { font-size: 80px; font-weight: 900; color: #facc15; font-family: sans-serif; margin-bottom: 20px; animation: pulse-r 1.5s infinite ease-in-out; }
     @keyframes pulse-r {
         0% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
         50% { transform: scale(1.2); text-shadow: 0 0 40px rgba(250, 204, 21, 0.8); }
         100% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
     }
-    .loading-text { font-size: 14px; letter-spacing: 2px; opacity: 0.8; text-transform: uppercase; animation: fade-text 1.5s infinite ease-in-out; }
+    .loading-text { font-size: 14px; letter-spacing: 2px; opacity: 0.8; text-transform: uppercase; animation: fade-text 1.5s infinite; }
     @keyframes fade-text { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
     /* HEADER */
@@ -89,32 +76,31 @@
     .header-top { display: flex; justify-content: space-between; align-items: center; color: #e5e7eb; margin-bottom: 14px; }
     .bank-name { font-size: 20px; font-weight: 700; letter-spacing: 0.08em; }
     .user-name { font-size: 12px; opacity: 0.9; }
-    .tag-ia { background: #facc15; color: #78350f; font-size: 11px; padding: 4px 10px; border-radius: 999px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+    .tag-ia { background: #facc15; color: #78350f; font-size: 11px; padding: 4px 10px; border-radius: 999px; font-weight: 600; }
+
     .saldo-card { background: #f9fafb; border-radius: 22px; padding: 14px 14px 12px; color: #111827; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
     .saldo-header-row { display: flex; justify-content: space-between; align-items: center; }
     .saldo-label { font-size: 12px; color: #6b7280; }
-    .btn-eye { background: none; border: none; cursor: pointer; font-size: 16px; color: #6b7280; padding: 4px; display: inline-flex; border-radius: 4px; }
-    .btn-eye:hover { color: #111827; background: #e5e7eb; }
+    .btn-eye { background: none; border: none; cursor: pointer; font-size: 16px; color: #6b7280; padding: 4px; display: inline-flex; }
     .saldo-valor { margin-top: 4px; font-size: 26px; font-weight: 700; color: #111827; min-height: 32px; }
     .valor-oculto { letter-spacing: 2px; font-size: inherit; color: #9ca3af !important; }
     .saldo-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #4b5563; }
     .saldo-sub span strong { color: #16a34a; }
+
     .actions-row { display: flex; justify-content: space-between; margin-top: 14px; }
-    .action-btn { flex: 1; background: #f9fafb; border-radius: 18px; box-shadow: 0 5px 10px rgba(0,0,0,0.12); padding: 10px 6px; margin: 0 4px; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: transform 0.1s; }
-    .action-btn:active { transform: scale(0.98); }
+    .action-btn { flex: 1; background: #f9fafb; border-radius: 18px; box-shadow: 0 5px 10px rgba(0,0,0,0.12); padding: 10px 6px; margin: 0 4px; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
     .action-icon { width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #eff6ff; color: #1e3a8a; }
     .action-label { font-size: 12px; color: #111827; font-weight: 500; }
 
-    /* CONTEÚDO */
+    /* CONTENT */
     .app-content { padding: 10px 14px 10px; background: #f3f4f6; flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; scroll-behavior: smooth; }
     .app-content::-webkit-scrollbar { width: 4px; }
     .app-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
-    /* TABS */
     .tabs { display: flex; gap: 6px; margin-bottom: 4px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; cursor: grab; user-select: none; flex-shrink: 0; }
     .tabs::-webkit-scrollbar { display: none; }
     .tabs.active { cursor: grabbing; }
-    .tab-btn { flex: none; padding: 8px 16px; border-radius: 999px; border: none; background: #e5e7eb; color: #4b5563; font-size: 12px; cursor: pointer; transition: background 0.2s, color 0.2s; font-weight: 500; pointer-events: auto; }
+    .tab-btn { flex: none; padding: 8px 16px; border-radius: 999px; border: none; background: #e5e7eb; color: #4b5563; font-size: 12px; cursor: pointer; font-weight: 500; }
     .tab-btn[aria-selected="true"] { background: #111827; color: #f9fafb; }
 
     .section { display: none; flex-direction: column; gap: 10px; padding-bottom: 20px; }
@@ -124,16 +110,14 @@
     .card.caixinha-card { background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff; border: none; }
     .card.caixinha-card .card-title, .card.caixinha-card .card-header, .card.caixinha-card label { color: #fff; }
     .card.caixinha-card input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
-    .card.caixinha-card input::placeholder { color: rgba(255,255,255,0.5); }
     .card-header-controls { display: flex; align-items: center; gap: 8px; }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; }
     .card-title { font-weight: 600; color: #111827; }
     .tag { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #e0f2fe; color: #1d4ed8; font-weight: 500; }
-    .tag.risco { background: #fee2e2; color: #b91c1c; }
     .tag.render { background: #4ade80; color: #064e3b; }
+    .tag.risco { background: #fee2e2; color: #b91c1c; }
     .alerta-ia { margin-top: 6px; font-size: 11px; padding: 8px 10px; border-radius: 12px; background: #fef3c7; border: 1px solid #facc15; color: #78350f; }
 
-    /* OUTROS ESTILOS */
     .transacao-card { margin-top: 6px; background: #ffffff; border-radius: 14px; padding: 8px 9px; border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     .transacao-left { display: flex; align-items: center; gap: 8px; }
     .transacao-icon { width: 30px; height: 30px; border-radius: 999px; background: #eef2ff; display: flex; align-items: center; justify-content: center; color: #4f46e5; font-size: 14px; flex-shrink: 0; }
@@ -165,10 +149,9 @@
     .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; font-size: 12px; }
     .form-group label { color: #111827; font-weight: 500; cursor: pointer; }
     .form-group input, .form-group select { padding: 6px 8px; border-radius: 10px; border: 1px solid #d1d5db; background: #f9fafb; color: #111827; font-size: 12px; outline: none; }
-    .form-group input:focus, .form-group select:focus { border-color: #2563eb; background: #fff; }
+    .form-group input:focus { border-color: #2563eb; background: #fff; }
 
     .btn-primary { width: 100%; padding: 8px; border-radius: 999px; border: none; background: #16a34a; color: #f9fafb; font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 4px; transition: background 0.2s; }
-    .btn-primary:hover { background: #15803d; }
     .btn-action-group { display: flex; gap: 8px; }
     .btn-accent { background: #4ade80; color: #064e3b; }
     .btn-secondary { background: rgba(255,255,255,0.2); color: #fff; }
@@ -181,7 +164,7 @@
     .app-footer { padding: 8px 14px; background: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; flex-shrink: 0; z-index: 5; }
     .footer-brand { font-weight: 600; color: #1d4ed8; }
 
-    /* OVERLAY CARTÃO VIRTUAL */
+    /* OVERLAY */
     .overlay-cartao { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f9fafb; display: none; flex-direction: column; z-index: 50; border-radius: 20px; }
     .overlay-cartao.active { display: flex; }
     .overlay-header { padding: 16px 18px 10px; background: linear-gradient(135deg, #4f46e5, #a855f7); color: #f9fafb; border-bottom-left-radius: 32px; flex-shrink: 0; }
@@ -202,39 +185,23 @@
     .btn-ghost { margin-top: 12px; width: 100%; padding: 9px; border-radius: 999px; border: 2px solid #4f46e5; background: transparent; color: #4f46e5; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s, color 0.2s; }
     .btn-ghost:active { background: #eef2ff; }
 
-    /* BOTÃO FLUTUANTE DE ACESSIBILIDADE */
+    /* BOTÃO ACESSIBILIDADE FIXO */
     .a11y-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background: #111827;
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2px solid #facc15;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      font-size: 24px;
-      transition: transform 0.2s, background 0.3s;
-      z-index: 9999;
+      position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+      background: #111827; color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 2px solid #facc15; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-size: 24px; transition: transform 0.2s, background 0.3s; z-index: 9999;
     }
     .a11y-toggle:hover { transform: scale(1.1); }
-    /* Estado Ativo: Fica Amarelo */
-    .a11y-toggle.ativo {
-        background: #facc15;
-        color: #111827;
-        border-color: #111827;
-    }
+    /* Estado Ativo */
+    .a11y-toggle.ativo { background: #facc15; color: #111827; border-color: #111827; }
 
   </style>
 </head>
 <body>
   
-  <button class="a11y-toggle" id="btn-a11y" title="Ativar/Desativar Acessibilidade" aria-label="Ativar modo de acessibilidade">
+  <button class="a11y-toggle" id="btn-a11y" title="Ativar Voz e Contraste" aria-label="Ativar voz e acessibilidade">
     ♿
   </button>
 
@@ -257,199 +224,165 @@
     </div>
 
     <div id="app-main" class="d-none" style="display:flex; flex-direction:column; height:100%;">
-        
         <header class="header-wrapper">
           <div class="header-top">
-            <div>
-              <h1 class="bank-name">RENEBANK</h1>
-              <div class="user-name">Bem-vindo, Hiro</div>
-            </div>
+            <div><h1 class="bank-name">RENEBANK</h1><div class="user-name">Bem-vindo, Hiro</div></div>
             <div class="tag-ia">IA ReneBank · Ativa</div>
           </div>
-
           <div class="saldo-card">
             <div class="saldo-header-row">
               <div class="saldo-label">Saldo disponível</div>
-              <button id="btn-eye-header" class="btn-eye" aria-label="Ocultar ou mostrar saldo">
-                  <span aria-hidden="true">👁️</span>
-              </button>
+              <button id="btn-eye-header" class="btn-eye" aria-label="Ocultar saldo"><span aria-hidden="true">👁️</span></button>
             </div>
-            
             <div id="saldo-valor" class="saldo-valor" aria-live="polite">R$ 0,00</div>
-            
             <div class="saldo-sub">
-              <span>Gasto no mês: <strong id="gasto-mes">R$ 0,00</strong></span>
+              <span>Gasto: <strong id="gasto-mes">R$ 0,00</strong></span>
               <span>Recebido: <strong id="recebido-mes">R$ 0,00</strong></span>
             </div>
           </div>
-
-          <nav class="actions-row" aria-label="Ações rápidas">
-            <button id="btn-pix-header" class="action-btn">
-              <div class="action-icon" aria-hidden="true">⚡</div>
-              <div class="action-label">Pix</div>
-            </button>
-            <button id="btn-cartao-header" class="action-btn">
-              <div class="action-icon" aria-hidden="true">💳</div>
-              <div class="action-label">Cartão</div>
-            </button>
-            <button id="btn-simular-header" class="action-btn">
-              <div class="action-icon" aria-hidden="true">➕</div>
-              <div class="action-label">Simular</div>
-            </button>
+          <nav class="actions-row">
+            <button id="btn-pix-header" class="action-btn"><div class="action-icon">⚡</div><div class="action-label">Pix</div></button>
+            <button id="btn-cartao-header" class="action-btn"><div class="action-icon">💳</div><div class="action-label">Cartão</div></button>
+            <button id="btn-simular-header" class="action-btn"><div class="action-icon">➕</div><div class="action-label">Simular</div></button>
           </nav>
         </header>
 
         <main class="app-content">
-          <div class="tabs" id="menu-tabs" role="tablist">
-            <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" id="tab-dashboard">Dashboard</button>
-            <button class="tab-btn" data-tab="extrato" role="tab" aria-selected="false" id="tab-extrato">Extrato</button>
-            <button class="tab-btn" data-tab="pix" role="tab" aria-selected="false" id="tab-pix">PIX / Boleto</button>
-            <button class="tab-btn" data-tab="investimentos" role="tab" aria-selected="false" id="tab-investimentos">Investimentos</button>
-            <button class="tab-btn" data-tab="perfil" role="tab" aria-selected="false" id="tab-perfil">Perfil</button>
+          <div class="tabs" id="menu-tabs">
+            <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="tab-btn" data-tab="extrato">Extrato</button>
+            <button class="tab-btn" data-tab="pix">PIX</button>
+            <button class="tab-btn" data-tab="investimentos">Investimentos</button>
+            <button class="tab-btn" data-tab="perfil">Perfil</button>
           </div>
 
-          <section id="dashboard" class="section active" role="tabpanel" aria-labelledby="tab-dashboard">
+          <section id="dashboard" class="section active">
             <div class="card">
-              <div class="card-header">
-                <h2 class="card-title">Resumo por categoria</h2>
-                <span class="tag">visão inteligente</span>
-              </div>
+              <div class="card-header"><h2 class="card-title">Resumo</h2><span class="tag">visão IA</span></div>
               <div id="resumo-categorias" class="resumo-grid"></div>
-              <div id="alerta-dashboard" class="alerta-ia" aria-live="polite">IA ReneBank analisando...</div>
+              <div id="alerta-dashboard" class="alerta-ia" aria-live="polite">IA analisando...</div>
             </div>
           </section>
 
-          <section id="extrato" class="section" role="tabpanel" aria-labelledby="tab-extrato">
+          <section id="extrato" class="section">
             <div class="card">
               <div class="card-header">
-                <h2 class="card-title">Extrato inteligente</h2>
+                <h2 class="card-title">Extrato</h2>
                 <div class="card-header-controls">
-                    <button id="btn-eye-extrato" class="btn-eye" aria-label="Ocultar valores">
-                      <span aria-hidden="true">👁️</span>
-                    </button>
-                    <span class="tag">auto-categorizado</span>
+                    <button id="btn-eye-extrato" class="btn-eye"><span aria-hidden="true">👁️</span></button>
                 </div>
               </div>
               <div id="lista-transacoes"></div>
             </div>
           </section>
 
-          <section id="pix" class="section" role="tabpanel" aria-labelledby="tab-pix">
+          <section id="pix" class="section">
             <div class="card">
-              <div class="card-header">
-                <h2 class="card-title">Enviar dinheiro (PIX)</h2>
-              </div>
+              <div class="card-header"><h2 class="card-title">Enviar PIX</h2></div>
               <div class="form-group">
-                <label for="destinatario-pix">Quem vai receber?</label>
+                <label>Destinatário</label>
                 <select id="destinatario-pix">
-                  <option value="">Selecione um destinatário</option>
+                  <option value="">Selecione...</option>
                   <option value="mae">Mãe ❤️</option>
-                  <option value="jorge">Jorge (Dev da equipe)</option>
-                  <option value="padaria">Padaria da Esquina</option>
-                  <option value="mercado">Mercado Extra</option>
-                  <option value="bar">Bar do Zé</option>
-                  <option value="ia">Categoria (IA vai sugerir)</option>
+                  <option value="jorge">Jorge (Dev)</option>
+                  <option value="padaria">Padaria</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label for="chave-pix">Chave PIX</label>
-                <input id="chave-pix" type="text" placeholder="e-mail, CPF ou telefone" />
-              </div>
-              <div class="form-group">
-                <label for="valor-pix">Valor</label>
-                <input id="valor-pix" type="number" step="0.01" placeholder="0,00" />
-              </div>
-              <button class="btn-primary" onclick="simularPix()">Simular envio PIX</button>
-              <div class="hint">Apenas simulação visual para o MVP.</div>
+              <div class="form-group"><label>Chave</label><input id="chave-pix" type="text" placeholder="Chave PIX" /></div>
+              <div class="form-group"><label>Valor</label><input id="valor-pix" type="number" step="0.01" placeholder="0,00" /></div>
+              <button class="btn-primary" onclick="simularPix()">Enviar PIX</button>
               <div id="retorno-pix" class="alerta" style="display:none;" aria-live="assertive"></div>
             </div>
           </section>
           
-          <section id="investimentos" class="section" role="tabpanel" aria-labelledby="tab-investimentos">
+          <section id="investimentos" class="section">
               <div class="card caixinha-card">
-                  <div class="card-header">
-                      <h2 class="card-title">Caixinha Turbo</h2>
-                      <span class="tag render">1% a.m.</span>
-                  </div>
-                  <div style="margin-bottom: 12px;">
-                      <span style="font-size: 12px; opacity: 0.8;">Saldo guardado</span>
-                      <div id="valor-caixinha" style="font-size: 24px; font-weight: bold;" aria-live="polite">R$ 0,00</div>
-                  </div>
-                  <div class="form-group">
-                      <label for="input-caixinha" class="visually-hidden">Valor</label>
-                      <input id="input-caixinha" type="number" placeholder="Valor (R$)" />
-                  </div>
+                  <div class="card-header"><h2 class="card-title">Caixinha Turbo</h2><span class="tag render">1% a.m.</span></div>
+                  <div style="margin-bottom: 12px;"><span style="font-size: 12px; opacity: 0.8;">Guardado</span><div id="valor-caixinha" style="font-size: 24px; font-weight: bold;">R$ 0,00</div></div>
+                  <div class="form-group"><input id="input-caixinha" type="number" placeholder="Valor (R$)" /></div>
                   <div class="btn-action-group">
                       <button class="btn-primary btn-accent" onclick="operarCaixinha('depositar')">Guardar</button>
                       <button class="btn-primary btn-secondary" onclick="operarCaixinha('resgatar')">Resgatar</button>
                   </div>
-                  <button class="btn-ghost" style="color: #a5b4fc; margin-top: 8px; font-size: 11px;" onclick="simularRendimentoCaixinha()">✨ Simular 1 mês</button>
+                  <button class="btn-ghost" style="color: #a5b4fc; margin-top: 8px; font-size: 11px;" onclick="simularRendimentoCaixinha()">✨ Render 1 mês</button>
               </div>
-
               <div class="card">
-                  <div class="card-header">
-                    <h2 class="card-title">Minha Carteira</h2>
-                    <span class="tag risco">Risco: E-Sports</span>
-                  </div>
+                  <div class="card-header"><h2 class="card-title">Carteira</h2><span class="tag risco">Risco: E-Sports</span></div>
                   <div id="lista-investimentos" class="horizontal-scroll"></div>
-                  <p class="hint">Valores atualizados com base no "hype" de mercado.</p>
-              </div>
-              
-              <div class="card">
-                  <div class="card-header"><h2 class="card-title">Ofertas Públicas (IPO)</h2></div>
-                  <div class="transacao-card">
-                      <div class="transacao-left">
-                          <div class="transacao-icon invest-icon" aria-hidden="true">WOR</div>
-                          <div class="transacao-info">
-                              <span class="transacao-descricao">Worlds 2025 Fund</span>
-                              <span class="transacao-meta">Fundo Multimercado</span>
-                          </div>
-                      </div>
-                      <button class="chip" style="border:none; cursor:pointer;">Ver</button>
-                  </div>
               </div>
           </section>
 
-          <section id="perfil" class="section" role="tabpanel" aria-labelledby="tab-perfil">
+          <section id="perfil" class="section">
             <div class="card">
-              <div class="card-header"><h2 class="card-title">Perfil financeiro</h2></div>
-              <p class="hint">Com base no seu histórico, identificamos seu perfil como equilibrado.</p>
-              <div class="chips">
-                <span class="chip">Perfil: Equilibrado</span>
-                <span class="chip">Meta: reduzir Lazer em 10%</span>
-                <span class="chip">Sugestão: criar reserva</span>
-              </div>
+              <div class="card-header"><h2 class="card-title">Perfil</h2></div>
+              <div class="chips"><span class="chip">Perfil: Equilibrado</span><span class="chip">Meta: +Poupança</span></div>
             </div>
           </section>
         </main>
 
-        <footer class="app-footer">
-          <span class="footer-brand">ReneBank · MVP</span>
-          <span>Hub financeiro com IA</span>
-        </footer>
+        <footer class="app-footer"><span class="footer-brand">ReneBank · MVP</span><span>IA Ativa</span></footer>
     </div>
 
-    <div id="overlay-cartao" class="overlay-cartao" role="dialog" aria-modal="true" aria-labelledby="titulo-cartao">
+    <div id="overlay-cartao" class="overlay-cartao">
       <div class="overlay-header">
-        <button class="overlay-voltar" id="btn-voltar-cartao" aria-label="Voltar">← Voltar</button>
-        <div class="overlay-titulo" id="titulo-cartao">Cartão Virtual</div>
-        <div class="overlay-sub">Use este cartão para compras online seguras.</div>
+        <button class="overlay-voltar" id="btn-voltar-cartao">← Voltar</button>
+        <div class="overlay-titulo">Cartão Virtual</div>
+        <div class="overlay-sub">Cartão online seguro.</div>
       </div>
       <div class="overlay-body">
-        <div class="cartao-virtual" aria-label="Cartão virtual">
+        <div class="cartao-virtual">
           <div class="cartao-top"><div class="cartao-chip"></div><div class="cartao-bandeira">RENEBANK</div></div>
           <div id="numero-cartao" class="cartao-numero"></div>
-          <div class="cartao-row-bottom">
-            <div><div class="cartao-label">Titular</div><div class="cartao-valor">HIRO</div></div>
-            <div><div class="cartao-label">Validade</div><div class="cartao-valor">12/30</div></div>
-          </div>
+          <div class="cartao-row-bottom"><div>HIRO</div><div>12/30</div></div>
         </div>
-        <div class="cvv-linha">CVV Dinâmico:<span id="cvv-dinamico" class="cvv-valor">000</span></div>
-        <button id="btn-atualizar-cartao" class="btn-ghost"><span class="btn-ghost-icon">🔄</span>GERAR NOVO</button>
+        <div class="cvv-linha">CVV: <span id="cvv-dinamico" class="cvv-valor">000</span></div>
+        <button id="btn-atualizar-cartao" class="btn-ghost"><span class="btn-ghost-icon">🔄</span>Novo Número</button>
       </div>
     </div>
 
-  </div> <script>
+  </div>
+
+  <script>
+    // --- SISTEMA DE VOZ (TTS) ---
+    let modoVoz = false;
+
+    function falar(texto) {
+        // Só fala se o modo voz estiver ligado
+        if (!modoVoz) return;
+        
+        // Verifica se o navegador suporta
+        if ('speechSynthesis' in window) {
+            // Cancela falas anteriores para não encavalar
+            window.speechSynthesis.cancel();
+            
+            const utter = new SpeechSynthesisUtterance(texto);
+            utter.lang = 'pt-BR'; // Português do Brasil
+            utter.rate = 1.1; // Um pouco mais rápido pra não ficar chato
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    // --- BOTÃO DE ACESSIBILIDADE ---
+    const btnA11y = document.getElementById("btn-a11y");
+    
+    btnA11y.addEventListener("click", () => {
+      // 1. Alterna visual
+      document.body.classList.toggle("acessibilidade-ativa");
+      
+      // 2. Alterna lógica
+      modoVoz = !modoVoz;
+      
+      const ativo = document.body.classList.contains("acessibilidade-ativa");
+      if(ativo) {
+        btnA11y.classList.add("ativo");
+        falar("Acessibilidade e voz ativadas. Bem vindo ao Rene Bank.");
+      } else {
+        btnA11y.classList.remove("ativo");
+        // Não fala nada ao desligar, só desliga
+      }
+      btnA11y.blur(); // Tira o foco para não prender a borda
+    });
+
     // --- LÓGICA DE LOGIN ---
     function fazerLogin() {
         const telaLogin = document.getElementById('screen-login');
@@ -458,35 +391,20 @@
 
         telaLogin.classList.add('d-none');
         telaLoading.classList.remove('d-none');
+        
+        falar("Entrando na sua conta. Aguarde.");
 
         setTimeout(() => {
             telaLoading.classList.add('d-none');
             appMain.classList.remove('d-none');
+            falar("Login realizado com sucesso. Bem vindo, Hiro.");
+            
             gerarDadosCartao();
             atualizarExtrato();
             renderizarInvestimentos();
             atualizarCaixinhaUI();
         }, 2500);
     }
-
-    // --- ACESSIBILIDADE ---
-    const btnA11y = document.getElementById("btn-a11y");
-    
-    btnA11y.addEventListener("click", () => {
-      document.body.classList.toggle("acessibilidade-ativa");
-      const ativo = document.body.classList.contains("acessibilidade-ativa");
-      
-      if(ativo) {
-        btnA11y.classList.add("ativo"); // Fica amarelo
-        btnA11y.setAttribute("aria-pressed", "true");
-      } else {
-        btnA11y.classList.remove("ativo"); // Volta a ser preto
-        btnA11y.setAttribute("aria-pressed", "false");
-      }
-      
-      // SOLUÇÃO DO "VOX": Tira o foco do botão para não ficar com a borda presa
-      btnA11y.blur();
-    });
 
     // --- ESTADO & DADOS ---
     let mostrarValores = true; 
@@ -496,41 +414,37 @@
     const btnEyeExtrato = document.getElementById("btn-eye-extrato");
 
     const transacoes = [
-      { id: 1, descricao: "Gasto Simulado (Lazer)", valor: -31.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
-      { id: 2, descricao: "Gasto Simulado (Lazer)", valor: -36.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
-      { id: 3, descricao: "Gasto Simulado (Lazer)", valor: -49.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
-      { id: 4, descricao: "Supermercado Bom Preço", valor: -230.50, data: "Ontem", origemServico: "Mercado", categoria: "Mercado" },
-      { id: 5, descricao: "Energia Elétrica", valor: -210.30, data: "Esta semana", origemServico: "Boleto", categoria: "Contas Fixas" },
-      { id: 6, descricao: "Recebimento", valor: 3500.00, data: "Este mês", origemServico: "Salário", categoria: "Receita" }
+      { id: 1, descricao: "Gasto Lazer", valor: -31.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
+      { id: 2, descricao: "Gasto Lazer", valor: -36.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
+      { id: 4, descricao: "Mercado Bom Preço", valor: -230.50, data: "Ontem", origemServico: "Mercado", categoria: "Mercado" },
+      { id: 6, descricao: "Salário", valor: 3500.00, data: "Este mês", origemServico: "Salário", categoria: "Receita" }
     ];
 
     const investimentos = [
         { ticker: "LCK:T1", nome: "T1 Esports", valor: 1250.40, variacao: 15.2 },
         { ticker: "CBLOL:PNG", nome: "paiN Gaming", valor: 850.20, variacao: 5.4 },
-        { ticker: "CBLOL:FUR", nome: "Furia Esports", valor: 420.00, variacao: -1.2 },
+        { ticker: "CBLOL:FUR", nome: "Furia", valor: 420.00, variacao: -1.2 },
         { ticker: "CBLOL:LLL", nome: "LOUD", valor: 780.90, variacao: 0.8 },
-        { ticker: "LEC:G2", nome: "G2 Esports", valor: 650.10, variacao: -3.5 },
-        { ticker: "LPL:BLG", nome: "Bilibili Gaming", valor: 900.50, variacao: 2.1 }
+        { ticker: "LEC:G2", nome: "G2", valor: 650.10, variacao: -3.5 },
+        { ticker: "LPL:BLG", nome: "BLG", valor: 900.50, variacao: 2.1 }
     ];
 
     let chavesPixFavoritas = {
       mae: "mae@exemplo.com",
-      jorge: "jorge.dev@renebank.com",
-      padaria: "11.111.111/0001-11",
-      mercado: "contato@mercadoextra.com",
-      bar: "bar_do_ze@pix.com"
+      jorge: "jorge@rene.com",
+      padaria: "11111111000111"
     };
 
     function formatarValor(v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
 
     function alternarPrivacidade() {
         mostrarValores = !mostrarValores; 
-        const labelTexto = mostrarValores ? "Ocultar saldo" : "Mostrar saldo";
-        btnEyeHeader.setAttribute("aria-label", labelTexto);
-        btnEyeExtrato.setAttribute("aria-label", labelTexto);
         const icone = mostrarValores ? "👁️" : "🙈";
         btnEyeHeader.querySelector('span').textContent = icone;
         btnEyeExtrato.querySelector('span').textContent = icone;
+        
+        falar(mostrarValores ? "Valores visíveis." : "Valores ocultos.");
+        
         atualizarExtrato(); renderizarInvestimentos(); atualizarCaixinhaUI(); 
     }
     btnEyeHeader.addEventListener("click", alternarPrivacidade);
@@ -539,21 +453,26 @@
     function ativarTab(tabId) {
       document.querySelectorAll(".tab-btn").forEach(b => {
         const isActive = b.getAttribute("data-tab") === tabId;
-        b.classList.toggle("active", isActive); b.setAttribute("aria-selected", isActive);
+        b.classList.toggle("active", isActive);
       });
       document.querySelectorAll(".section").forEach(sec => { sec.classList.toggle("active", sec.id === tabId); });
+      
+      // Fala o nome da aba
+      if(tabId === 'pix') falar("Área Pix");
+      else if(tabId === 'investimentos') falar("Área de Investimentos");
+      else if(tabId === 'extrato') falar("Seu Extrato");
+      else if(tabId === 'dashboard') falar("Dashboard");
     }
     document.querySelectorAll(".tab-btn").forEach(btn => { btn.addEventListener("click", () => { ativarTab(btn.getAttribute("data-tab")); }); });
 
     document.getElementById("btn-pix-header").addEventListener("click", () => ativarTab("pix"));
     document.getElementById("btn-cartao-header").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.add("active");
-      document.getElementById("btn-voltar-cartao").focus();
+      falar("Cartão Virtual aberto.");
     });
     document.getElementById("btn-simular-header").addEventListener("click", simularMovimentacao);
     document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.remove("active");
-      document.getElementById("btn-cartao-header").focus(); 
     });
 
     function atualizarExtrato() {
@@ -565,7 +484,7 @@
         if (!resumo[t.categoria]) resumo[t.categoria] = 0; resumo[t.categoria] += Math.abs(t.valor);
         const card = document.createElement("div"); card.className = "transacao-card";
         const left = document.createElement("div"); left.className = "transacao-left";
-        const icon = document.createElement("div"); icon.className = "transacao-icon"; icon.setAttribute("aria-hidden", "true"); icon.textContent = t.valor < 0 ? "💸" : "⬆️";
+        const icon = document.createElement("div"); icon.className = "transacao-icon"; icon.textContent = t.valor < 0 ? "💸" : "⬆️";
         const info = document.createElement("div"); info.className = "transacao-info";
         const desc = document.createElement("span"); desc.className = "transacao-descricao"; desc.textContent = t.descricao;
         const meta = document.createElement("span"); meta.className = "transacao-meta"; meta.textContent = `${t.data} · ${t.origemServico}`;
@@ -600,24 +519,26 @@
 
     function operarCaixinha(tipo) {
         const input = document.getElementById("input-caixinha"); const valor = parseFloat(input.value);
-        if (!valor || valor <= 0) { alert("Digite um valor válido."); return; }
+        if (!valor || valor <= 0) { alert("Valor inválido."); return; }
         if (tipo === 'depositar') {
-            if (valor > saldoContaCorrente) { alert("Saldo insuficiente na conta corrente!"); return; }
-            transacoes.unshift({ id: transacoes.length + 1, descricao: "Guardado na Caixinha", valor: -valor, data: "Agora", origemServico: "Investimento", categoria: "Caixinha" });
-            saldoCaixinha += valor; alert(`Sucesso! Você guardou ${formatarValor(valor)}.`);
+            if (valor > saldoContaCorrente) { alert("Saldo insuficiente."); return; }
+            transacoes.unshift({ id: Date.now(), descricao: "Guardado na Caixinha", valor: -valor, data: "Agora", origemServico: "Investimento", categoria: "Caixinha" });
+            saldoCaixinha += valor; 
+            falar(`Guardado ${valor} reais na caixinha.`);
         } else if (tipo === 'resgatar') {
-            if (valor > saldoCaixinha) { alert("Saldo insuficiente na caixinha!"); return; }
+            if (valor > saldoCaixinha) { alert("Saldo insuficiente na caixinha."); return; }
             saldoCaixinha -= valor;
-            transacoes.unshift({ id: transacoes.length + 1, descricao: "Resgate da Caixinha", valor: valor, data: "Agora", origemServico: "Investimento", categoria: "Caixinha" });
-            alert(`Sucesso! Você resgatou ${formatarValor(valor)}.`);
+            transacoes.unshift({ id: Date.now(), descricao: "Resgate da Caixinha", valor: valor, data: "Agora", origemServico: "Investimento", categoria: "Caixinha" });
+            falar(`Resgatado ${valor} reais da caixinha.`);
         }
         input.value = ""; atualizarExtrato(); atualizarCaixinhaUI(); 
     }
 
     function simularRendimentoCaixinha() {
-        if(saldoCaixinha <= 0) { alert("Guarde dinheiro primeiro para ver render!"); return; }
+        if(saldoCaixinha <= 0) { alert("Sem saldo para render."); return; }
         const rendimento = saldoCaixinha * 0.01; saldoCaixinha += rendimento;
-        atualizarCaixinhaUI(); alert(`🤑 O dinheiro rendeu! + ${formatarValor(rendimento)}`);
+        atualizarCaixinhaUI();
+        falar(`Rendimento aplicado. Mais ${rendimento.toFixed(2)} reais.`);
     }
 
     function renderizarInvestimentos() {
@@ -626,7 +547,7 @@
             const card = document.createElement("div"); card.className = "invest-card";
             const tickerSigla = item.ticker.split(":")[1] || "???";
             const header = document.createElement("div"); header.className = "invest-header";
-            const icon = document.createElement("div"); icon.className = "transacao-icon invest-icon"; icon.setAttribute("aria-hidden", "true"); icon.textContent = tickerSigla;
+            const icon = document.createElement("div"); icon.className = "transacao-icon invest-icon"; icon.textContent = tickerSigla;
             const ticker = document.createElement("span"); ticker.className = "invest-ticker"; ticker.textContent = item.ticker;
             header.appendChild(icon); header.appendChild(ticker);
             const body = document.createElement("div");
@@ -653,21 +574,21 @@
     function gerarInsights(resumo) {
       const alerta = document.getElementById("alerta-dashboard"); let maiorCat = null; let maiorValor = 0;
       Object.entries(resumo).forEach(([cat, valor]) => { if (cat === "Receita") return; if (valor > maiorValor) { maiorValor = valor; maiorCat = cat; } });
-      if (!maiorCat) { alerta.textContent = "Ainda não há dados suficientes para gerar um alerta inteligente."; return; }
+      if (!maiorCat) { alerta.textContent = "Sem dados suficientes."; return; }
       const valTexto = mostrarValores ? formatarValor(maiorValor) : "um valor alto";
-      alerta.textContent = `IA ReneBank · Alerta: você gastou ${valTexto} com ${maiorCat}. Sugerimos reduzir.`;
+      alerta.textContent = `IA: Cuidado com gastos em ${maiorCat}.`;
     }
 
     function simularMovimentacao() {
       const ehReceita = Math.random() < 0.5;
       if (ehReceita) {
         const valor = +(Math.random() * 500 + 50).toFixed(2);
-        transacoes.unshift({ id: transacoes.length + 1, descricao: "Recebimento (PIX)", valor: valor, data: "Agora", origemServico: "PIX", categoria: "Receita" });
-        alert(`Simulação: + ${formatarValor(valor)}`);
+        transacoes.unshift({ id: Date.now(), descricao: "Pix Recebido", valor: valor, data: "Agora", origemServico: "PIX", categoria: "Receita" });
+        falar(`Você recebeu um Pix de ${valor} reais.`);
       } else {
         const valor = +(Math.random() * 80 + 20).toFixed(2);
-        transacoes.unshift({ id: transacoes.length + 1, descricao: "Gasto (Lazer)", valor: -valor, data: "Agora", origemServico: "Lazer", categoria: "Lazer" });
-        alert(`Simulação: - ${formatarValor(valor)}`);
+        transacoes.unshift({ id: Date.now(), descricao: "Gasto Lazer", valor: -valor, data: "Agora", origemServico: "Lazer", categoria: "Lazer" });
+        falar(`Gasto de ${valor} reais em lazer.`);
       }
       atualizarExtrato(); ativarTab("extrato");
     }
@@ -681,8 +602,10 @@
     function simularPix() {
       const val = parseFloat(document.getElementById("valor-pix").value || "0");
       if(val <= 0) { alert("Valor inválido"); return; }
-      transacoes.unshift({ id: transacoes.length + 1, descricao: "PIX Enviado", valor: -val, data: "Agora", origemServico: "PIX", categoria: "Transferência" });
-      const retorno = document.getElementById("retorno-pix"); retorno.style.display = 'block'; retorno.textContent = "Sucesso! PIX enviado.";
+      transacoes.unshift({ id: Date.now(), descricao: "PIX Enviado", valor: -val, data: "Agora", origemServico: "PIX", categoria: "Transferência" });
+      document.getElementById("retorno-pix").style.display = 'block';
+      document.getElementById("retorno-pix").textContent = "Sucesso! PIX enviado.";
+      falar(`Pix de ${val} reais enviado com sucesso.`);
       atualizarExtrato(); ativarTab("extrato");
     }
 
@@ -691,7 +614,10 @@
       let numero = "5500 "; for(let i=0; i<3; i++) { let bloco = Math.floor(1000 + Math.random() * 9000); numero += bloco + " "; }
       document.getElementById("numero-cartao").textContent = numero.trim();
     }
-    document.getElementById("btn-atualizar-cartao").addEventListener("click", gerarDadosCartao);
+    document.getElementById("btn-atualizar-cartao").addEventListener("click", () => {
+        gerarDadosCartao();
+        falar("Novo número de cartão gerado.");
+    });
   </script>
 </body>
 </html>
