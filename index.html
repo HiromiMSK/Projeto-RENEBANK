@@ -11,18 +11,15 @@
       padding: 0;
       box-sizing: border-box;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      /* Remove o outline padrão feio dos navegadores */
       outline: none;
     }
 
-    /* --- LÓGICA DE ACESSIBILIDADE --- */
-    /* Por padrão, sem outline pesado */
-    
-    /* Quando a classe .acessibilidade-ativa estiver no BODY, aplicamos o foco forte */
+    /* ACESSIBILIDADE: Foco visível */
     body.acessibilidade-ativa *:focus-visible {
-      outline: 4px solid #facc15 !important; /* Amarelo forte */
+      outline: 4px solid #facc15 !important;
       outline-offset: 2px;
-      box-shadow: 0 0 0 6px #000; /* Borda preta extra para contraste */
+      box-shadow: 0 0 0 4px #000;
+      z-index: 9999;
     }
 
     body {
@@ -32,22 +29,28 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
+      overflow-x: hidden; /* Evita scroll lateral na página inteira */
     }
 
-    /* CELULAR (CONTAINER) */
+    /* --- CELULAR (CONTAINER PRINCIPAL) --- */
     .app-container {
-      position: relative;
+      position: relative; /* Importante para o Overlay ficar aqui dentro */
       background: #f9fafb;
-      width: 390px;
       
-      /* CORREÇÃO DO ESTICAMENTO: Altura fixa simulando celular */
-      height: 844px; /* Altura média de iPhone */
-      max-height: 95vh; /* Se a tela do PC for pequena, respeita */
+      /* TAMANHO FIXO PARA FICAR IGUAL CELULAR NO PC */
+      width: 390px;
+      height: 844px; /* Altura média iPhone */
+      
+      /* Garante que não estoure em telas pequenas */
+      max-width: 100%;
+      max-height: 95vh;
       
       border-radius: 28px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      overflow: hidden; /* Tudo que passar daqui some ou scrolla dentro */
-      border: 1px solid #d1d5db;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3); /* Sombra mais bonita no PC */
+      
+      overflow: hidden; /* O Segredo: Corta tudo que sair das bordas redondas */
+      border: 8px solid #111827; /* Borda preta simulando a carcaça do celular */
+      
       display: flex;
       flex-direction: column;
     }
@@ -58,8 +61,8 @@
       padding: 18px 18px 14px;
       position: relative;
       color: #fff;
-      flex-shrink: 0; /* Impede que o header encolha */
-      z-index: 5;
+      flex-shrink: 0;
+      z-index: 10;
     }
 
     .header-top {
@@ -128,18 +131,13 @@
     .app-content {
       padding: 10px 14px 10px;
       background: #f3f4f6;
-      flex: 1; /* Ocupa o espaço restante */
+      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      
-      /* CORREÇÃO SCROLL: Só essa parte rola */
       overflow-y: auto; 
-      /* Scroll suave */
       scroll-behavior: smooth;
     }
-    
-    /* Esconde barra de rolagem feia */
     .app-content::-webkit-scrollbar { width: 4px; }
     .app-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
@@ -167,7 +165,6 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;
     }
 
-    /* Estilo Caixinha */
     .card.caixinha-card {
         background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff; border: none;
     }
@@ -193,7 +190,6 @@
       background: #fef3c7; border: 1px solid #facc15; color: #78350f;
     }
 
-    /* Transações */
     .transacao-card {
       margin-top: 6px; background: #ffffff; border-radius: 14px; padding: 8px 9px;
       border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 12px;
@@ -219,7 +215,6 @@
     .variacao.up { color: #16a34a; }
     .variacao.down { color: #dc2626; }
 
-    /* Horizontal Scroll */
     .horizontal-scroll {
         display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px;
         scrollbar-width: none; cursor: grab; user-select: none;
@@ -239,7 +234,6 @@
     }
     .invest-ticker { font-size: 10px; color: #6b7280; }
 
-    /* Resumo Grid */
     .resumo-grid {
       display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 4px;
     }
@@ -250,7 +244,6 @@
     .resumo-label { color: #6b7280; margin-bottom: 2px; }
     .resumo-valor { font-weight: 600; color: #111827; }
 
-    /* Forms */
     .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; font-size: 12px; }
     .form-group label { color: #111827; font-weight: 500; cursor: pointer; }
     .form-group input, .form-group select {
@@ -281,7 +274,6 @@
       background: #e5e7eb; color: #374151;
     }
 
-    /* Footer */
     .app-footer {
       padding: 8px 14px; background: #f9fafb; border-top: 1px solid #e5e7eb;
       display: flex; justify-content: space-between; font-size: 11px; color: #6b7280;
@@ -289,14 +281,20 @@
     }
     .footer-brand { font-weight: 600; color: #1d4ed8; }
 
-    /* OVERLAY CARTÃO VIRTUAL - CORREÇÃO */
+    /* --- OVERLAY CARTÃO VIRTUAL (CORRIGIDO) --- */
+    /* Agora ele é absoluto em relação ao .app-container (celular), não à tela */
     .overlay-cartao {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%; /* Ocupa 100% do container pai (celular) */
+      top: 0;
+      left: 0;
+      width: 100%; /* 100% dos 390px do celular */
+      height: 100%; /* 100% da altura do celular */
       background: #f9fafb;
       display: none;
       flex-direction: column;
       z-index: 50;
+      /* Arredondamento igual ao do container pai para não vazar */
+      border-radius: 20px; 
     }
     .overlay-cartao.active { display: flex; }
 
@@ -339,13 +337,14 @@
     }
     .btn-ghost:active { background: #eef2ff; }
 
-    /* BOTÃO FLUTUANTE DE ACESSIBILIDADE */
+    /* --- BOTÃO FLUTUANTE DE ACESSIBILIDADE (FIXED) --- */
+    /* Agora ele fica fixo na tela do monitor/celular, não no container */
     .a11y-toggle {
-      position: absolute;
-      top: 16px;
-      right: -50px; /* Fica fora do celular, no desktop */
-      width: 40px;
-      height: 40px;
+      position: fixed; /* Isso resolve o problema de sumir no PC */
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
       background: #111827;
       color: #fff;
       border-radius: 50%;
@@ -354,35 +353,25 @@
       justify-content: center;
       cursor: pointer;
       border: 2px solid #facc15;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      font-size: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-size: 24px;
       transition: transform 0.2s;
+      z-index: 9999; /* Fica acima de tudo */
     }
     .a11y-toggle:hover {
       transform: scale(1.1);
-    }
-    
-    /* No celular mesmo, posiciona fixo na tela */
-    @media (max-width: 500px) {
-      .a11y-toggle {
-        position: fixed;
-        top: auto;
-        bottom: 20px;
-        right: 20px;
-        z-index: 100;
-      }
     }
 
   </style>
 </head>
 <body>
   
+  <button class="a11y-toggle" id="btn-a11y" title="Ativar/Desativar Acessibilidade" aria-label="Ativar modo de acessibilidade">
+    ♿
+  </button>
+
   <div class="app-container">
     
-    <button class="a11y-toggle" id="btn-a11y" title="Ativar alto contraste" aria-label="Ativar modo de acessibilidade">
-      ♿
-    </button>
-
     <header class="header-wrapper">
       <div class="header-top">
         <div>
@@ -568,67 +557,64 @@
       <span class="footer-brand">ReneBank · MVP</span>
       <span>Hub financeiro com IA</span>
     </footer>
-  </div>
 
-  <div id="overlay-cartao" class="overlay-cartao" role="dialog" aria-modal="true" aria-labelledby="titulo-cartao">
-    <div class="overlay-header">
-      <button class="overlay-voltar" id="btn-voltar-cartao" aria-label="Voltar para o menu principal">
-        ← Voltar
-      </button>
-      <div class="overlay-titulo" id="titulo-cartao">Cartão Virtual</div>
-      <div class="overlay-sub">
-        Use este cartão para compras online seguras. O número expira em 24h.
-      </div>
-    </div>
-    <div class="overlay-body">
-      <div class="cartao-virtual" aria-label="Imagem do cartão virtual">
-        <div class="cartao-top">
-          <div class="cartao-chip"></div>
-          <div class="cartao-bandeira">RENEBANK</div>
-        </div>
-        <div id="numero-cartao" class="cartao-numero" aria-label="Número do cartão">
-          </div>
-        <div class="cartao-row-bottom">
-          <div>
-            <div class="cartao-label">Titular</div>
-            <div class="cartao-valor">HIRO</div>
-          </div>
-          <div>
-            <div class="cartao-label">Validade</div>
-            <div class="cartao-valor">12/30</div>
-          </div>
+    <div id="overlay-cartao" class="overlay-cartao" role="dialog" aria-modal="true" aria-labelledby="titulo-cartao">
+      <div class="overlay-header">
+        <button class="overlay-voltar" id="btn-voltar-cartao" aria-label="Voltar para o menu principal">
+          ← Voltar
+        </button>
+        <div class="overlay-titulo" id="titulo-cartao">Cartão Virtual</div>
+        <div class="overlay-sub">
+          Use este cartão para compras online seguras. O número expira em 24h.
         </div>
       </div>
+      <div class="overlay-body">
+        <div class="cartao-virtual" aria-label="Imagem do cartão virtual">
+          <div class="cartao-top">
+            <div class="cartao-chip"></div>
+            <div class="cartao-bandeira">RENEBANK</div>
+          </div>
+          <div id="numero-cartao" class="cartao-numero" aria-label="Número do cartão">
+            </div>
+          <div class="cartao-row-bottom">
+            <div>
+              <div class="cartao-label">Titular</div>
+              <div class="cartao-valor">HIRO</div>
+            </div>
+            <div>
+              <div class="cartao-label">Validade</div>
+              <div class="cartao-valor">12/30</div>
+            </div>
+          </div>
+        </div>
 
-      <div class="cvv-linha">
-        CVV Dinâmico:
-        <span id="cvv-dinamico" class="cvv-valor">000</span>
+        <div class="cvv-linha">
+          CVV Dinâmico:
+          <span id="cvv-dinamico" class="cvv-valor">000</span>
+        </div>
+
+        <button id="btn-atualizar-cartao" class="btn-ghost">
+          <span class="btn-ghost-icon" aria-hidden="true">🔄</span>
+          GERAR NOVO CARTÃO VIRTUAL
+        </button>
       </div>
-
-      <button id="btn-atualizar-cartao" class="btn-ghost">
-        <span class="btn-ghost-icon" aria-hidden="true">🔄</span>
-        GERAR NOVO CARTÃO VIRTUAL
-      </button>
     </div>
-  </div>
 
-  <script>
+  </div> <script>
     // --- LÓGICA DO BOTÃO DE ACESSIBILIDADE ---
     const btnA11y = document.getElementById("btn-a11y");
     
     btnA11y.addEventListener("click", () => {
       document.body.classList.toggle("acessibilidade-ativa");
-      
       const ativo = document.body.classList.contains("acessibilidade-ativa");
       if(ativo) {
-        alert("Modo de acessibilidade ativado: Bordas de alto contraste.");
         btnA11y.setAttribute("aria-pressed", "true");
+        // Simples feedback visual/sonoro fake
+        console.log("Acessibilidade Ativada");
       } else {
-        alert("Modo de acessibilidade desativado.");
         btnA11y.setAttribute("aria-pressed", "false");
       }
     });
-
 
     // --- ESTADO ---
     let mostrarValores = true; 
