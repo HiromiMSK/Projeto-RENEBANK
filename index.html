@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>ReneBank - App Completo</title>
+  <title>ReneBank - Sandbox</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     /* RESET */
@@ -44,32 +44,22 @@
 
     .d-none { display: none !important; }
 
-    /* TELAS (LOGIN/LOADING) */
-    #screen-login {
-        position: absolute; inset: 0; background: linear-gradient(145deg, #0f172a, #1e3a8a);
-        z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; color: white;
-    }
+    /* LOGIN & LOADING */
+    #screen-login { position: absolute; inset: 0; background: linear-gradient(145deg, #0f172a, #1e3a8a); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; color: white; }
     .login-logo { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: 2px; }
     .login-sub { font-size: 14px; opacity: 0.8; margin-bottom: 40px; }
     .login-form { width: 100%; display: flex; flex-direction: column; gap: 16px; }
     .login-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 14px; border-radius: 12px; color: white; font-size: 16px; }
     .btn-login { background: #facc15; color: #111827; font-weight: bold; padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer; margin-top: 10px; }
     
-    #screen-loading {
-        position: absolute; inset: 0; background: #0f172a; z-index: 99;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
-    }
+    #screen-loading { position: absolute; inset: 0; background: #0f172a; z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
     .loader-r { font-size: 80px; font-weight: 900; color: #facc15; font-family: sans-serif; margin-bottom: 20px; animation: pulse-r 1.5s infinite ease-in-out; }
-    @keyframes pulse-r {
-        0% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
-        50% { transform: scale(1.2); text-shadow: 0 0 40px rgba(250, 204, 21, 0.8); }
-        100% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
-    }
+    @keyframes pulse-r { 0% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); } 50% { transform: scale(1.2); text-shadow: 0 0 40px rgba(250, 204, 21, 0.8); } 100% { transform: scale(1); text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); } }
     .loading-text { font-size: 14px; letter-spacing: 2px; opacity: 0.8; text-transform: uppercase; animation: fade-text 1.5s infinite; }
     @keyframes fade-text { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
     /* HEADER */
-    .header-wrapper { background: linear-gradient(145deg, #0f172a, #1d4ed8); padding: 18px 18px 14px; position: relative; color: #fff; flex-shrink: 0; z-index: 10; }
+    .header-wrapper { background: linear-gradient(145deg, #0f172a, #1d4ed8); padding: 18px 14px 14px; position: relative; color: #fff; flex-shrink: 0; z-index: 10; }
     .header-top { display: flex; justify-content: space-between; align-items: center; color: #e5e7eb; margin-bottom: 14px; }
     .bank-name { font-size: 20px; font-weight: 700; letter-spacing: 0.08em; }
     .user-name { font-size: 12px; opacity: 0.9; }
@@ -84,10 +74,11 @@
     .saldo-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #4b5563; }
     .saldo-sub span strong { color: #16a34a; }
 
-    .actions-row { display: flex; justify-content: space-between; margin-top: 14px; }
-    .action-btn { flex: 1; background: #f9fafb; border-radius: 18px; box-shadow: 0 5px 10px rgba(0,0,0,0.12); padding: 10px 6px; margin: 0 4px; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-    .action-icon { width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #eff6ff; color: #1e3a8a; }
-    .action-label { font-size: 12px; color: #111827; font-weight: 500; }
+    /* Actions Row ajustada para 4 botões */
+    .actions-row { display: flex; justify-content: space-between; margin-top: 14px; gap: 4px; }
+    .action-btn { flex: 1; background: #f9fafb; border-radius: 16px; box-shadow: 0 5px 10px rgba(0,0,0,0.12); padding: 10px 4px; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; min-width: 0; }
+    .action-icon { width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #eff6ff; color: #1e3a8a; }
+    .action-label { font-size: 11px; color: #111827; font-weight: 600; white-space: nowrap; }
 
     /* CONTENT */
     .app-content { padding: 10px 14px 10px; background: #f3f4f6; flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; scroll-behavior: smooth; }
@@ -106,7 +97,16 @@
     .card { background: #ffffff; border-radius: 18px; padding: 10px 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb; }
     .card.caixinha-card { background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff; border: none; }
     .card.caixinha-card .card-title, .card.caixinha-card .card-header, .card.caixinha-card label { color: #fff; }
+    
     .card.caixinha-card input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+    
+    /* CORREÇÃO DO INPUT INVISÍVEL */
+    .card.caixinha-card input:focus {
+        background: rgba(255,255,255,0.2) !important;
+        color: #fff !important;
+        border-color: #fff;
+    }
+
     .card-header-controls { display: flex; align-items: center; gap: 8px; }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; }
     .card-title { font-weight: 600; color: #111827; }
@@ -153,10 +153,22 @@
     .btn-accent { background: #4ade80; color: #064e3b; }
     .btn-secondary { background: rgba(255,255,255,0.2); color: #fff; }
 
-    .hint { font-size: 11px; color: #6b7280; margin-top: 4px; }
-    .alerta { margin-top: 4px; font-size: 11px; padding: 6px 8px; border-radius: 10px; background: #fef3c7; border: 1px solid #facc15; color: #92400e; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .chip { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #e5e7eb; color: #374151; }
+    .boleto-result { background: #f3f4f6; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px dashed #6b7280; }
+    .boleto-label { font-size: 11px; color: #6b7280; }
+    .boleto-dado { font-weight: 700; color: #111827; font-size: 14px; margin-bottom: 6px; }
+
+    /* ESTILOS DO PERFIL NOVO */
+    .profile-header { display: flex; flex-direction: column; align-items: center; padding: 14px 0; border-bottom: 1px solid #f3f4f6; margin-bottom: 8px; }
+    .avatar-circle { width: 80px; height: 80px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 4px solid #fff; }
+    .profile-name { font-size: 18px; font-weight: 700; color: #111827; }
+    .profile-sub { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+    .profile-tags { display: flex; gap: 8px; justify-content: center; }
+    .menu-list { display: flex; flex-direction: column; }
+    .menu-item { background: none; border: none; padding: 14px 4px; border-bottom: 1px solid #f3f4f6; text-align: left; font-size: 13px; color: #374151; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:active { background: #f9fafb; }
+    .menu-arrow { color: #d1d5db; font-size: 14px; }
+    .text-red { color: #dc2626 !important; }
 
     .app-footer { padding: 8px 14px; background: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; flex-shrink: 0; z-index: 5; }
     .footer-brand { font-weight: 600; color: #1d4ed8; }
@@ -182,25 +194,8 @@
     .btn-ghost { margin-top: 12px; width: 100%; padding: 9px; border-radius: 999px; border: 2px solid #4f46e5; background: transparent; color: #4f46e5; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s, color 0.2s; }
     .btn-ghost:active { background: #eef2ff; }
 
-    /* BOLETO RESULTADO */
-    .boleto-result {
-        background: #f3f4f6;
-        padding: 12px;
-        border-radius: 12px;
-        margin-top: 10px;
-        border: 1px dashed #6b7280;
-    }
-    .boleto-label { font-size: 11px; color: #6b7280; }
-    .boleto-dado { font-weight: 700; color: #111827; font-size: 14px; margin-bottom: 6px; }
-
     /* ACESSIBILIDADE FIXA */
-    .a11y-toggle {
-      position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-      background: #111827; color: #fff; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; border: 2px solid #facc15; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      font-size: 24px; transition: transform 0.2s, background 0.3s; z-index: 9999;
-    }
+    .a11y-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #111827; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #facc15; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 24px; transition: transform 0.2s, background 0.3s; z-index: 9999; }
     .a11y-toggle:hover { transform: scale(1.1); }
     .a11y-toggle.ativo { background: #facc15; color: #111827; border-color: #111827; }
 
@@ -248,8 +243,11 @@
           </div>
           <nav class="actions-row">
             <button id="btn-pix-header" class="action-btn"><div class="action-icon">⚡</div><div class="action-label">Pix</div></button>
-            <button id="btn-cartao-header" class="action-btn"><div class="action-icon">💳</div><div class="action-label">Cartão</div></button>
+            
+            <button id="btn-receber-header" class="action-btn" onclick="simularRecebimento()"><div class="action-icon">⬇️</div><div class="action-label">Receber</div></button>
+            
             <button id="btn-boleto-header" class="action-btn"><div class="action-icon">📄</div><div class="action-label">Pagar</div></button>
+            <button id="btn-cartao-header" class="action-btn"><div class="action-icon">💳</div><div class="action-label">Cartão</div></button>
           </nav>
         </header>
 
@@ -342,10 +340,45 @@
 
           <section id="perfil" class="section">
             <div class="card">
-              <div class="card-header"><h2 class="card-title">Perfil</h2></div>
-              <div class="chips"><span class="chip">Perfil: Equilibrado</span><span class="chip">Meta: +Poupança</span></div>
+              <div class="profile-header">
+                 <div class="avatar-circle">H</div>
+                 <div class="profile-name">Hiro</div>
+                 <div class="profile-sub">Cliente desde 2024</div>
+                 <div class="profile-tags">
+                    <span class="tag">Equilibrado</span>
+                    <span class="tag render">+Poupança</span>
+                 </div>
+              </div>
+              
+              <div class="menu-list">
+                  <button class="menu-item">
+                      <span>👤 Meus Dados</span>
+                      <span class="menu-arrow">›</span>
+                  </button>
+                  <button class="menu-item">
+                      <span>🔔 Notificações</span>
+                      <span class="menu-arrow">›</span>
+                  </button>
+                  <button class="menu-item">
+                      <span>⚙️ Configurar App</span>
+                      <span class="menu-arrow">›</span>
+                  </button>
+                  <button class="menu-item">
+                      <span>💬 Ajuda e IA</span>
+                      <span class="menu-arrow">›</span>
+                  </button>
+                  <button class="menu-item text-red">
+                      <span>🚪 Sair da Conta</span>
+                  </button>
+              </div>
+            </div>
+            
+            <div class="card" style="text-align:center; padding: 20px;">
+                <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px;">Versão do App</div>
+                <div style="font-size: 12px; font-weight: bold; color: #6b7280;">v2.5.0 (Beta)</div>
             </div>
           </section>
+
         </main>
 
         <footer class="app-footer"><span class="footer-brand">ReneBank · MVP</span><span>IA Ativa</span></footer>
@@ -371,7 +404,7 @@
   </div>
 
   <script>
-    // --- SISTEMA DE VOZ ---
+    // --- VOZ ---
     let modoVoz = false;
     function falar(texto) {
         if (!modoVoz) return;
@@ -415,15 +448,14 @@
     const btnEyeHeader = document.getElementById("btn-eye-header");
     const btnEyeExtrato = document.getElementById("btn-eye-extrato");
 
-    // DADOS PARA BOLETO FAKE
-    let boletoPendente = null; // Armazena o boleto gerado
+    // BOLETOS
+    let boletoPendente = null;
     const empresasBoleto = ["Companhia de Luz", "Águas do Estado", "Internet Fibra Max", "Condomínio Edifício Solar", "Loja de Skins e Games", "IPVA Detran"];
 
     const transacoes = [
       { id: 1, descricao: "Gasto Lazer", valor: -31.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
       { id: 2, descricao: "Gasto Lazer", valor: -36.00, data: "Agora", origemServico: "Lazer", categoria: "Lazer" },
-      { id: 4, descricao: "Mercado Bom Preço", valor: -230.50, data: "Ontem", origemServico: "Mercado", categoria: "Mercado" },
-      { id: 6, descricao: "Salário", valor: 3500.00, data: "Este mês", origemServico: "Salário", categoria: "Receita" }
+      { id: 6, descricao: "Recebimento", valor: 3500.00, data: "Este mês", origemServico: "Salário", categoria: "Receita" }
     ];
 
     const investimentos = [
@@ -472,61 +504,55 @@
       document.getElementById("overlay-cartao").classList.add("active");
       falar("Cartão Virtual aberto.");
     });
-    document.getElementById("btn-simular-header").addEventListener("click", simularMovimentacao);
+    
     document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
       document.getElementById("overlay-cartao").classList.remove("active");
     });
 
-    // --- LÓGICA DE BOLETO ---
+    // --- NOVO: SIMULAR RECEBIMENTO (Botão do Header) ---
+    function simularRecebimento() {
+        // Gera valor positivo entre 50 e 2000
+        const valor = +(Math.random() * 1950 + 50).toFixed(2);
+        
+        // Adiciona ao histórico
+        transacoes.unshift({
+          id: Date.now(),
+          descricao: "Transferência Recebida",
+          valor: valor,
+          data: "Agora",
+          origemServico: "TED/PIX",
+          categoria: "Receita"
+        });
+        
+        falar(`Você recebeu uma transferência de ${Math.floor(valor)} reais.`);
+        alert(`🤑 Oba! Você recebeu ${formatarValor(valor)}`);
+        
+        atualizarExtrato();
+        ativarTab("extrato");
+    }
+
+    // --- BOLETO ---
     function buscarBoleto() {
         const codigo = document.getElementById("input-boleto").value;
-        if(codigo.length < 5) {
-            alert("Código de barras inválido.");
-            falar("Código inválido.");
-            return;
-        }
-        
-        // Simulação
+        if(codigo.length < 5) { alert("Código inválido."); falar("Código inválido."); return; }
         const nomeAleatorio = empresasBoleto[Math.floor(Math.random() * empresasBoleto.length)];
         const valorAleatorio = parseFloat((Math.random() * 400 + 50).toFixed(2));
-        
         boletoPendente = { nome: nomeAleatorio, valor: valorAleatorio };
-        
         document.getElementById("boleto-nome").textContent = nomeAleatorio;
         document.getElementById("boleto-valor").textContent = formatarValor(valorAleatorio);
         document.getElementById("area-boleto-confirmacao").classList.remove("d-none");
-        
-        falar(`Boleto encontrado. ${nomeAleatorio}, valor de ${valorAleatorio} reais.`);
+        falar(`Boleto de ${valorAleatorio} reais para ${nomeAleatorio}.`);
     }
 
     function pagarBoleto() {
         if(!boletoPendente) return;
-        
-        if(boletoPendente.valor > saldoContaCorrente) {
-            alert("Saldo insuficiente!");
-            falar("Saldo insuficiente para pagar este boleto.");
-            return;
-        }
-        
-        transacoes.unshift({
-            id: Date.now(),
-            descricao: `Pgto ${boletoPendente.nome}`,
-            valor: -boletoPendente.valor,
-            data: "Agora",
-            origemServico: "Boleto",
-            categoria: "Contas"
-        });
-        
-        alert("Pagamento realizado com sucesso!");
-        falar("Pagamento realizado com sucesso.");
-        
-        // Limpa
+        if(boletoPendente.valor > saldoContaCorrente) { alert("Saldo insuficiente!"); falar("Sem saldo."); return; }
+        transacoes.unshift({ id: Date.now(), descricao: `Pgto ${boletoPendente.nome}`, valor: -boletoPendente.valor, data: "Agora", origemServico: "Boleto", categoria: "Contas" });
+        alert("Pago com sucesso!"); falar("Pago.");
         document.getElementById("input-boleto").value = "";
         document.getElementById("area-boleto-confirmacao").classList.add("d-none");
         boletoPendente = null;
-        
-        atualizarExtrato();
-        ativarTab("extrato");
+        atualizarExtrato(); ativarTab("extrato");
     }
 
     function atualizarExtrato() {
@@ -592,7 +618,7 @@
         if(saldoCaixinha <= 0) { alert("Sem saldo para render."); return; }
         const rendimento = saldoCaixinha * 0.01; saldoCaixinha += rendimento;
         atualizarCaixinhaUI();
-        falar(`Rendimento aplicado. Mais ${rendimento.toFixed(2)} reais.`);
+        falar(`Rendimento aplicado.`);
     }
 
     function renderizarInvestimentos() {
@@ -633,18 +659,10 @@
       alerta.textContent = `IA: Cuidado com gastos em ${maiorCat}.`;
     }
 
+    // --- ANTIGO SIMULADOR AGORA NO BOTÃO SIMULAR MOVIMENTAÇÃO (SE SOBROU) ---
+    // (Pode remover se quiser limpar, mas deixei caso queira usar no console)
     function simularMovimentacao() {
-      const ehReceita = Math.random() < 0.5;
-      if (ehReceita) {
-        const valor = +(Math.random() * 500 + 50).toFixed(2);
-        transacoes.unshift({ id: Date.now(), descricao: "Pix Recebido", valor: valor, data: "Agora", origemServico: "PIX", categoria: "Receita" });
-        falar(`Você recebeu um Pix de ${valor} reais.`);
-      } else {
-        const valor = +(Math.random() * 80 + 20).toFixed(2);
-        transacoes.unshift({ id: Date.now(), descricao: "Gasto Lazer", valor: -valor, data: "Agora", origemServico: "Lazer", categoria: "Lazer" });
-        falar(`Gasto de ${valor} reais em lazer.`);
-      }
-      atualizarExtrato(); ativarTab("extrato");
+        simularRecebimento();
     }
 
     const selectDest = document.getElementById("destinatario-pix");
@@ -656,10 +674,11 @@
     function simularPix() {
       const val = parseFloat(document.getElementById("valor-pix").value || "0");
       if(val <= 0) { alert("Valor inválido"); return; }
+      if(val > saldoContaCorrente) { alert("Saldo insuficiente!"); falar("Sem saldo."); return; }
       transacoes.unshift({ id: Date.now(), descricao: "PIX Enviado", valor: -val, data: "Agora", origemServico: "PIX", categoria: "Transferência" });
       document.getElementById("retorno-pix").style.display = 'block';
       document.getElementById("retorno-pix").textContent = "Sucesso! PIX enviado.";
-      falar(`Pix de ${val} reais enviado com sucesso.`);
+      falar(`Pix de ${val} reais enviado.`);
       atualizarExtrato(); ativarTab("extrato");
     }
 
