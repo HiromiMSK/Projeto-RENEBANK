@@ -26,7 +26,7 @@
         <div id="screen-login">
             <div class="login-logo">RENEBANK</div>
             <div class="login-sub">Seu banco, suas regras.</div>
-
+            
             <form class="login-form" onsubmit="event.preventDefault(); fazerLogin();">
                 <input type="text" class="login-input" placeholder="CPF ou Conta" required>
                 <input id="input-senha" type="password" class="login-input" placeholder="Senha" required>
@@ -34,7 +34,7 @@
             </form>
 
             <div class="divider-login">ou</div>
-
+            
             <button class="btn-faceid" onclick="iniciarFaceID()">
                 <span style="font-size: 20px;">☺</span> Acessar com Rosto
             </button>
@@ -54,14 +54,14 @@
         </div>
 
         <div id="app-main" class="d-none" style="display:flex; flex-direction:column; height:100%;">
-
+            
             <header class="header-wrapper">
                 <div class="header-top">
                     <div>
                         <h1 class="bank-name">RENEBANK</h1>
                         <div class="user-name">Bem-vindo, Hiro</div>
                     </div>
-
+                    
                     <div style="display: flex; gap: 8px;">
                         <div class="tag-points" onclick="abrirLoja()">
                             🎁 <span id="display-pontos">0</span> pts
@@ -133,7 +133,7 @@
                             <button class="btn-primary" style="width: auto; background: #dc2626; margin:0;" onclick="pagarDivida()">Pagar Dívida</button>
                         </div>
                     </div>
-
+                    
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Simulador de Crédito</h2><span class="tag render">Aprovado</span></div>
@@ -205,7 +205,7 @@
                             <input id="input-boleto" type="number" placeholder="Digite apenas números" />
                         </div>
                         <button class="btn-primary" onclick="buscarBoleto()">Buscar Boleto</button>
-
+                        
                         <div id="area-boleto-confirmacao" class="d-none">
                             <div class="boleto-dashed-box">
                                 <div class="boleto-label">Beneficiário</div>
@@ -319,7 +319,7 @@
                 </div>
 
                 <h3 style="margin: 20px 0 10px;" class="loja-titulo">Recompensas</h3>
-
+                
                 <div class="loja-grid">
                     <div class="cupom-card" onclick="comprarRecompensa(100, 'Cupom iFood R$ 10')">
                         <div class="cupom-icon">🍔</div>
