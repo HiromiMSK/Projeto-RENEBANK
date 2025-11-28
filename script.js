@@ -59,12 +59,12 @@ function falar(texto) {
         const utter = new SpeechSynthesisUtterance(texto);
         utter.lang = 'pt-BR';
         utter.rate = 1.1; // Velocidade um pouco mais rápida
-        
+
         // Tenta encontrar uma voz do Google ou Microsoft em PT-BR
         if (vozesDisponiveis.length === 0) vozesDisponiveis = window.speechSynthesis.getVoices();
         const vozBR = vozesDisponiveis.find(voz => (voz.name.includes('Google') || voz.name.includes('Microsoft')) && voz.lang.includes('pt-BR')) || vozesDisponiveis.find(voz => voz.lang.includes('pt-BR'));
         if (vozBR) utter.voice = vozBR;
-        
+
         window.speechSynthesis.speak(utter);
     }
 }
@@ -76,7 +76,7 @@ function falar(texto) {
 function alternarTema() {
     temaEscuro = !temaEscuro;
     const body = document.body;
-    
+
     // Adiciona ou remove a classe 'dark-mode' do body
     if (temaEscuro) {
         body.classList.add('dark-mode');
@@ -100,17 +100,17 @@ function atualizarPontosUI() {
 function adicionarPontos(qtd, motivo = "") {
     renePontos += qtd;
     atualizarPontosUI();
-    
+
     // Mostra a notificação flutuante (Toast)
     const toast = document.getElementById('toast-notification');
     document.getElementById('toast-msg').textContent = `+${qtd} pontos! (${motivo})`;
     toast.classList.add('show');
-    
+
     // Esconde a notificação após 3 segundos
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
-    
+
     falar(`Você ganhou ${qtd} Rene points.`);
 }
 
@@ -119,12 +119,14 @@ function abrirLoja() {
     document.getElementById("overlay-loja").classList.add("active");
     falar("Bem-vindo à loja de Rene Points.");
 }
+
 function fecharLoja() {
     document.getElementById("overlay-loja").classList.remove("active");
 }
+
 function comprarRecompensa(custo, nomeItem) {
     if (renePontos >= custo) {
-        if(confirm(`Trocar ${custo} pontos por "${nomeItem}"?`)) {
+        if (confirm(`Trocar ${custo} pontos por "${nomeItem}"?`)) {
             renePontos -= custo;
             atualizarPontosUI();
             alert(`Sucesso! Você resgatou: ${nomeItem}`);
@@ -144,11 +146,11 @@ function ativarTab(tabId) {
     // Remove classe 'active' de todos os botões e seções
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-    
+
     // Adiciona 'active' apenas no clicado
     const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
     if (btn) btn.classList.add("active");
-    
+
     const sec = document.getElementById(tabId);
     if (sec) sec.classList.add("active");
 }
@@ -162,9 +164,12 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 });
 
 // Eventos dos botões do topo (Atalhos)
-document.getElementById("btn-pix-header").addEventListener("click", () => { ativarTab("pix"); falar("Área Pix"); });
-document.getElementById("btn-boleto-header").addEventListener("click", () => { ativarTab("pagar"); falar("Pagamentos"); });
-document.getElementById("btn-emprestimo-header").addEventListener("click", () => { ativarTab("emprestimos"); falar("Empréstimos"); });
+document.getElementById("btn-pix-header").addEventListener("click", () => { ativarTab("pix");
+    falar("Área Pix"); });
+document.getElementById("btn-boleto-header").addEventListener("click", () => { ativarTab("pagar");
+    falar("Pagamentos"); });
+document.getElementById("btn-emprestimo-header").addEventListener("click", () => { ativarTab("emprestimos");
+    falar("Empréstimos"); });
 document.getElementById("btn-receber-header").addEventListener("click", simularRecebimento);
 
 // ==========================================================
@@ -175,11 +180,11 @@ document.getElementById("btn-receber-header").addEventListener("click", simularR
 function iniciarFaceID() {
     const overlay = document.getElementById('screen-faceid');
     const status = document.getElementById('faceid-status');
-    
+
     overlay.classList.remove('d-none');
     status.textContent = "Escaneando rosto...";
     falar("Posicione o rosto.");
-    
+
     // Delay simulado
     setTimeout(() => { status.textContent = "Analise Biométrica..."; }, 1500);
 
@@ -204,12 +209,12 @@ function fazerLogin() {
     // Esconde login, mostra loading
     document.getElementById('screen-login').classList.add('d-none');
     document.getElementById('screen-loading').classList.remove('d-none');
-    
+
     // Após 2s, mostra o app principal
     setTimeout(() => {
         document.getElementById('screen-loading').classList.add('d-none');
         document.getElementById('app-main').classList.remove('d-none');
-        
+
         // Inicializa dados
         gerarDadosCartao();
         atualizarExtrato();
@@ -218,7 +223,7 @@ function fazerLogin() {
         atualizarSimulacaoEmprestimo();
         atualizarDividaUI();
         atualizarPontosUI();
-        
+
         falar("Bem vindo ao Rene Bank, Hiro.");
     }, 2000);
 }
@@ -239,18 +244,18 @@ function alternarPrivacidade() {
     mostrarValores = !mostrarValores;
     const btnEyeHeader = document.getElementById("btn-eye-header");
     const btnEyeExtrato = document.getElementById("btn-eye-extrato");
-    
+
     const icone = mostrarValores ? "👁️" : "🙈";
     btnEyeHeader.querySelector('span').textContent = icone;
     btnEyeExtrato.querySelector('span').textContent = icone;
-    
+
     // Atualiza todas as UIs que mostram dinheiro
     atualizarExtrato();
     renderizarInvestimentos();
     atualizarCaixinhaUI();
     atualizarSimulacaoEmprestimo();
     atualizarDividaUI();
-    
+
     falar(mostrarValores ? "Valores visíveis" : "Valores ocultos");
 }
 document.getElementById("btn-eye-header").addEventListener("click", alternarPrivacidade);
@@ -265,13 +270,13 @@ function atualizarDividaUI() {
 function pagarDivida() {
     if (dividaAtual <= 0) return alert("Você não tem dívidas para pagar! 🎉");
     const valorPagar = parseFloat(prompt(`Sua dívida é ${formatarValor(dividaAtual)}. Quanto deseja pagar?`));
-    
+
     if (isNaN(valorPagar) || valorPagar <= 0) return alert("Valor inválido.");
     if (valorPagar > saldoContaCorrente) return alert("Saldo insuficiente.");
 
     // Evita pagar mais do que deve
     let valorRealPago = (valorPagar > dividaAtual) ? dividaAtual : valorPagar;
-    
+
     if (confirm(`Confirmar pagamento de ${formatarValor(valorRealPago)}?`)) {
         transacoes.unshift({
             id: Date.now(),
@@ -283,7 +288,7 @@ function pagarDivida() {
         });
         dividaAtual -= valorRealPago;
         if (dividaAtual < 0) dividaAtual = 0;
-        
+
         alert("Pagamento realizado!");
         adicionarPontos(30, "Pagamento em dia"); // Ganha pontos
         atualizarExtrato();
@@ -295,16 +300,16 @@ function pagarDivida() {
 function atualizarSimulacaoEmprestimo() {
     const valor = parseFloat(document.getElementById("slider-emprestimo").value);
     const parcelas = parseInt(document.getElementById("select-parcelas").value);
-    
+
     // Cálculo simples de juros baseados no número de parcelas
     let juros = 0;
     if (parcelas === 3) juros = 0.02;
     if (parcelas === 6) juros = 0.05;
     if (parcelas === 12) juros = 0.10;
-    
+
     const total = valor * (1 + juros);
     const valorParcela = total / parcelas;
-    
+
     document.getElementById("display-valor-emprestimo").textContent = formatarValor(valor);
     document.getElementById("display-parcela").textContent = formatarValor(valorParcela);
 }
@@ -345,7 +350,7 @@ function atualizarExtrato() {
         saldo += t.valor;
         if (t.valor < 0) totalGastos += Math.abs(t.valor);
         else totalReceitas += t.valor;
-        
+
         // Agrupa por categoria para o gráfico
         if (!resumo[t.categoria]) resumo[t.categoria] = 0;
         resumo[t.categoria] += Math.abs(t.valor);
@@ -353,7 +358,7 @@ function atualizarExtrato() {
         // Cria o elemento HTML da transação
         const card = document.createElement("div");
         card.className = "transacao-card";
-        
+
         // Formatação HTML do card de transação
         card.innerHTML = `
             <div class="transacao-left">
@@ -372,9 +377,9 @@ function atualizarExtrato() {
         `;
         lista.appendChild(card);
     });
-    
+
     saldoContaCorrente = saldo;
-    
+
     // Atualiza cabeçalho
     document.getElementById("saldo-valor").textContent = mostrarValores ? formatarValor(saldo) : "••••";
     document.getElementById("gasto-mes").textContent = mostrarValores ? formatarValor(totalGastos) : "••••";
@@ -396,11 +401,11 @@ function atualizarExtrato() {
     const porcentagem = Math.min((totalGastos / limite) * 100, 100);
     const barra = document.getElementById("barra-gastos");
     barra.style.width = mostrarValores ? porcentagem + "%" : "0%";
-    
+
     if (porcentagem > 50) barra.className = "progress-fill warning";
     if (porcentagem > 85) barra.className = "progress-fill danger";
     else if (porcentagem <= 50) barra.className = "progress-fill";
-    
+
     document.getElementById("label-gastos-mes").textContent = mostrarValores ? formatarValor(totalGastos) : "••••";
 }
 
@@ -439,6 +444,7 @@ function simularPix() {
 }
 
 let boletoPendente = null;
+
 function buscarBoleto() {
     const codigo = document.getElementById("input-boleto").value;
     if (codigo.length < 5) return alert("Código inválido");
@@ -478,7 +484,7 @@ function operarCaixinha(tipo) {
     const input = document.getElementById("input-caixinha");
     const valor = parseFloat(input.value);
     if (!valor || valor <= 0) return alert("Valor inválido.");
-    
+
     if (tipo === 'depositar') {
         if (valor > saldoContaCorrente) return alert("Saldo insuficiente.");
         transacoes.unshift({
@@ -521,13 +527,13 @@ function renderizarInvestimentos() {
     const divLista = document.getElementById("lista-investimentos");
     divLista.innerHTML = "";
     investimentos.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "invest-card";
-        const tickerSigla = item.ticker.split(":")[1] || "???";
-        const symbol = item.variacao >= 0 ? "▲" : "▼";
-        const cssClass = item.variacao >= 0 ? "up" : "down";
-        
-        card.innerHTML = `
+                const card = document.createElement("div");
+                card.className = "invest-card";
+                const tickerSigla = item.ticker.split(":")[1] || "???";
+                const symbol = item.variacao >= 0 ? "▲" : "▼";
+                const cssClass = item.variacao >= 0 ? "up" : "down";
+
+                card.innerHTML = `
             <div class="invest-header">
                 <div class="transacao-icon invest-icon">${tickerSigla}</div>
                 <span class="invest-ticker">${item.ticker}</span>
