@@ -10,18 +10,42 @@
 
 <body>
 
-    <button class="a11y-toggle" id="btn-a11y" title="Ativar Voz e Contraste">♿</button>
+    <button class="float-btn btn-a11y" id="btn-a11y" title="Ativar Voz">♿</button>
+    <button class="float-btn btn-theme" onclick="alternarTema()" title="Alterar Tema">🌙</button>
+
+    <div id="toast-notification" class="toast">
+        <div class="toast-icon">🎁</div>
+        <div class="toast-content">
+            <div class="toast-title">RenePoints</div>
+            <div id="toast-msg" class="toast-msg">Você ganhou +10 pontos!</div>
+        </div>
+    </div>
 
     <div class="app-container">
 
         <div id="screen-login">
             <div class="login-logo">RENEBANK</div>
             <div class="login-sub">Seu banco, suas regras.</div>
+
             <form class="login-form" onsubmit="event.preventDefault(); fazerLogin();">
                 <input type="text" class="login-input" placeholder="CPF ou Conta" required>
                 <input id="input-senha" type="password" class="login-input" placeholder="Senha" required>
-                <button type="submit" class="btn-login">ENTRAR</button>
+                <button type="submit" class="btn-login">ENTRAR COM SENHA</button>
             </form>
+
+            <div class="divider-login">ou</div>
+
+            <button class="btn-faceid" onclick="iniciarFaceID()">
+                <span style="font-size: 20px;">☺</span> Acessar com Rosto
+            </button>
+        </div>
+
+        <div id="screen-faceid" class="faceid-overlay d-none">
+            <div class="faceid-camera-box">
+                <div class="scanner-line"></div>
+                <div class="face-icon-large">☺</div>
+            </div>
+            <div id="faceid-status" class="faceid-text">Escaneando rosto...</div>
         </div>
 
         <div id="screen-loading" class="d-none">
@@ -30,14 +54,22 @@
         </div>
 
         <div id="app-main" class="d-none" style="display:flex; flex-direction:column; height:100%;">
+
             <header class="header-wrapper">
                 <div class="header-top">
                     <div>
                         <h1 class="bank-name">RENEBANK</h1>
                         <div class="user-name">Bem-vindo, Hiro</div>
                     </div>
-                    <div class="tag-ia" onclick="toggleChat()">💬 IA ReneBank</div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <div class="tag-points" onclick="abrirLoja()">
+                            🎁 <span id="display-pontos">0</span> pts
+                        </div>
+                        <div class="tag-ia" onclick="toggleChat()">💬 IA</div>
+                    </div>
                 </div>
+
                 <div class="saldo-card">
                     <div class="saldo-header-row">
                         <div class="saldo-label">Saldo disponível</div>
@@ -49,6 +81,7 @@
                         <span>Recebido: <strong id="recebido-mes">R$ 0,00</strong></span>
                     </div>
                 </div>
+
                 <nav class="actions-row">
                     <button id="btn-pix-header" class="action-btn"><div class="action-icon">⚡</div><div class="action-label">Pix</div></button>
                     <button id="btn-receber-header" class="action-btn" onclick="simularRecebimento()"><div class="action-icon">⬇️</div><div class="action-label">Receber</div></button>
@@ -91,20 +124,21 @@
                 </section>
 
                 <section id="emprestimos" class="section">
-                    <div class="card" style="background: #fef2f2; border-color: #fecaca; margin-bottom: 10px;">
+                    <div class="card card-danger-bg" style="margin-bottom: 10px;">
                         <div class="card-header">
-                            <h2 class="card-title" style="color: #991b1b;">Minha Dívida Atual</h2>
+                            <h2 class="card-title" style="color: #b91c1c;">Minha Dívida Atual</h2>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div id="valor-divida" style="font-size: 24px; font-weight: bold; color: #dc2626;">R$ 0,00</div>
                             <button class="btn-primary" style="width: auto; background: #dc2626; margin:0;" onclick="pagarDivida()">Pagar Dívida</button>
                         </div>
                     </div>
+
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Simulador de Crédito</h2><span class="tag render">Aprovado</span></div>
                         <div style="padding: 10px 0;">
-                            <div style="font-size: 12px; color: #6b7280; text-align: center;">Quanto você precisa?</div>
+                            <div style="font-size: 12px; opacity: 0.7; text-align: center;">Quanto você precisa?</div>
                             <div id="display-valor-emprestimo" class="loan-val-display">R$ 1.000,00</div>
                             <div class="loan-slider-container">
                                 <input type="range" id="slider-emprestimo" min="100" max="5000" step="100" value="1000" oninput="atualizarSimulacaoEmprestimo()">
@@ -120,13 +154,12 @@
                                 </select>
                             </div>
 
-                            <div style="background: #f3f4f6; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 12px; display: flex; justify-content: space-between;">
+                            <div class="info-box-gray">
                                 <span>Parcela Estimada:</span>
                                 <strong id="display-parcela">R$ 1.000,00</strong>
                             </div>
 
-                            <button class="btn-primary" onclick="contratarEmprestimo()">Contratar Agora</button>
-                            <p style="font-size: 10px; color: #9ca3af; text-align: center; margin-top: 8px;">Sujeito a análise de crédito em tempo real.</p>
+                            <button class="btn-primary" onclick="contratarEmprestimo()">Contratar Agora (+50 pts)</button>
                         </div>
                     </div>
                 </section>
@@ -144,7 +177,7 @@
                 <section id="pix" class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Enviar PIX</h2>
+                            <h2 class="card-title">Enviar PIX</h2><span class="tag render">+10 pts</span>
                         </div>
                         <div class="form-group">
                             <label>Destinatário</label>
@@ -158,26 +191,27 @@
                         <div class="form-group"><label>Chave</label><input id="chave-pix" type="text" placeholder="Chave PIX" /></div>
                         <div class="form-group"><label>Valor</label><input id="valor-pix" type="number" step="0.01" placeholder="0,00" /></div>
                         <button class="btn-primary" onclick="simularPix()">Enviar PIX</button>
-                        <div id="retorno-pix" class="alerta-ia" style="display:none; background: #dcfce7; border-color: #22c55e; color: #14532d;" aria-live="assertive"></div>
+                        <div id="retorno-pix" class="alerta-ia" style="display:none;" aria-live="assertive"></div>
                     </div>
                 </section>
 
                 <section id="pagar" class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Pagar Boleto</h2>
+                            <h2 class="card-title">Pagar Boleto</h2><span class="tag render">+20 pts</span>
                         </div>
                         <div class="form-group">
                             <label>Código de Barras</label>
                             <input id="input-boleto" type="number" placeholder="Digite apenas números" />
                         </div>
                         <button class="btn-primary" onclick="buscarBoleto()">Buscar Boleto</button>
+
                         <div id="area-boleto-confirmacao" class="d-none">
-                            <div style="background: #f3f4f6; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px dashed #6b7280;">
-                                <div class="boleto-label" style="font-size: 11px; color: #6b7280;">Beneficiário</div>
-                                <div id="boleto-nome" style="font-weight: 700; color: #111827; margin-bottom: 6px;">--</div>
-                                <div class="boleto-label" style="font-size: 11px; color: #6b7280;">Valor</div>
-                                <div id="boleto-valor" style="font-weight: 700; color: #111827;">--</div>
+                            <div class="boleto-dashed-box">
+                                <div class="boleto-label">Beneficiário</div>
+                                <div id="boleto-nome" class="boleto-value">--</div>
+                                <div class="boleto-label">Valor</div>
+                                <div id="boleto-valor" class="boleto-value">--</div>
                             </div>
                             <button class="btn-primary btn-accent" style="margin-top:10px" onclick="pagarBoleto()">Confirmar Pagamento</button>
                         </div>
@@ -213,16 +247,16 @@
                             <div class="profile-sub">Cliente desde 2024</div>
                         </div>
                         <div class="menu-list">
+                            <button class="menu-item" onclick="abrirLoja()"><span>🛍️ Loja de Pontos</span><span class="menu-arrow">›</span></button>
                             <button class="menu-item"><span>👤 Meus Dados</span><span class="menu-arrow">›</span></button>
                             <button class="menu-item" onclick="toggleChat()"><span>💬 Ajuda e IA</span><span class="menu-arrow">›</span></button>
                             <button class="menu-item" style="color: #dc2626;" onclick="fazerLogout()"><span>🚪 Sair da Conta</span></button>
                         </div>
                     </div>
                 </section>
-
             </main>
 
-            <footer class="app-footer"><span class="footer-brand">ReneBank · 2.8</span><span>IA Ativa</span></footer>
+            <footer class="app-footer"><span class="footer-brand">ReneBank · 4.0</span><span>IA Ativa</span></footer>
         </div>
 
         <div id="screen-chat" class="chat-screen">
@@ -241,7 +275,7 @@
             </div>
         </div>
 
-        <div id="overlay-cartao" class="overlay-cartao">
+        <div id="overlay-cartao" class="overlay-full">
             <div class="overlay-header-card">
                 <button class="btn-close-overlay" id="btn-voltar-cartao">←</button>
                 <div class="overlay-title-text">Meu Cartão</div>
@@ -269,6 +303,45 @@
                 <button id="btn-atualizar-cartao" class="btn-update-card">
                     <span>🔄</span> Gerar Novo Cartão Virtual
                 </button>
+            </div>
+        </div>
+
+        <div id="overlay-loja" class="overlay-full">
+            <div class="overlay-header-card">
+                <button class="btn-close-overlay" onclick="fecharLoja()">✕</button>
+                <div class="overlay-title-text">Loja RenePoints</div>
+                <div style="width: 30px;"></div>
+            </div>
+            <div class="loja-container">
+                <div class="card-pontos-destaque">
+                    <div style="font-size:12px; opacity:0.8;">Seus Pontos</div>
+                    <div id="loja-saldo-pontos" style="font-size:32px; font-weight:800;">0</div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px;" class="loja-titulo">Recompensas</h3>
+
+                <div class="loja-grid">
+                    <div class="cupom-card" onclick="comprarRecompensa(100, 'Cupom iFood R$ 10')">
+                        <div class="cupom-icon">🍔</div>
+                        <div class="cupom-desc">Cupom iFood R$ 10</div>
+                        <div class="cupom-price">100 pts</div>
+                    </div>
+                    <div class="cupom-card" onclick="comprarRecompensa(200, 'Desconto Uber R$ 15')">
+                        <div class="cupom-icon">🚗</div>
+                        <div class="cupom-desc">Voucher Uber R$ 15</div>
+                        <div class="cupom-price">200 pts</div>
+                    </div>
+                    <div class="cupom-card" onclick="comprarRecompensa(500, 'Isenção de Taxa')">
+                        <div class="cupom-icon">🏦</div>
+                        <div class="cupom-desc">Isenção de Taxas (1 mês)</div>
+                        <div class="cupom-price">500 pts</div>
+                    </div>
+                    <div class="cupom-card" onclick="comprarRecompensa(50, 'Skin no LoL')">
+                        <div class="cupom-icon">🎮</div>
+                        <div class="cupom-desc">Sorteio de RP</div>
+                        <div class="cupom-price">50 pts</div>
+                    </div>
+                </div>
             </div>
         </div>
 
