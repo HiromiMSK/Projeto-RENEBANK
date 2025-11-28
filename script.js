@@ -38,6 +38,7 @@ function falar(texto) {
 let mostrarValores = true;
 let saldoCaixinha = 0.00;
 let saldoContaCorrente = 0;
+let dividaAtual = 0.00; // NOVO: Variável para controlar a dívida
 
 // --- DADOS INICIAIS ---
 const empresasBoleto = ["Companhia de Luz", "Águas do Estado", "Internet Fibra Max"];
@@ -133,7 +134,7 @@ document.getElementById("btn-emprestimo-header").addEventListener("click", () =>
 // 3. Cartão
 document.getElementById("btn-cartao-header").addEventListener("click", () => {
     document.getElementById("overlay-cartao").classList.add("active");
-    falar("Visualizando cartão virtual. O número e o CVV estão na tela.");
+    falar("Visualizando cartão virtual.");
 });
 document.getElementById("btn-voltar-cartao").addEventListener("click", () => {
     document.getElementById("overlay-cartao").classList.remove("active");
@@ -148,7 +149,7 @@ function fazerLogout() {
     falar("Saindo do ReneBank. Até logo.");
 }
 
-// --- PRIVACIDADE ---
+// --- PRIVACIDADE E UI ---
 const btnEyeHeader = document.getElementById("btn-eye-header");
 const btnEyeExtrato = document.getElementById("btn-eye-extrato");
 
@@ -162,10 +163,64 @@ function alternarPrivacidade() {
     renderizarInvestimentos();
     atualizarCaixinhaUI();
     atualizarSimulacaoEmprestimo();
+    atualizarDividaUI(); // Atualiza a dívida também
     falar(mostrarValores ? "Valores visíveis" : "Valores ocultos");
 }
 btnEyeHeader.addEventListener("click", alternarPrivacidade);
 btnEyeExtrato.addEventListener("click", alternarPrivacidade);
+
+// --- LÓGICA DE DÍVIDA (NOVO) ---
+function atualizarDividaUI() {
+    const el = document.getElementById("valor-divida");
+    if (el) {
+        el.textContent = mostrarValores ? formatarValor(dividaAtual) : "••••";
+    }
+}
+
+function pagarDivida() {
+    if (dividaAtual <= 0) {
+        falar("Você não possui dívidas pendentes.");
+        return alert("Você não tem dívidas para pagar! 🎉");
+    }
+
+    const valorPagar = parseFloat(prompt(`Sua dívida é ${formatarValor(dividaAtual)}. Quanto deseja pagar?`));
+
+    if (isNaN(valorPagar) || valorPagar <= 0) {
+        return alert("Valor inválido.");
+    }
+
+    if (valorPagar > saldoContaCorrente) {
+        falar("Saldo insuficiente na conta corrente.");
+        return alert("Saldo insuficiente.");
+    }
+
+    let valorRealPago = valorPagar;
+    if (valorPagar > dividaAtual) {
+        valorRealPago = dividaAtual; // Não paga mais do que deve
+    }
+
+    if (confirm(`Confirmar pagamento de ${formatarValor(valorRealPago)} para abater a dívida?`)) {
+        // Debita da conta
+        transacoes.unshift({
+            id: Date.now(),
+            descricao: "Pagamento de Dívida",
+            valor: -valorRealPago,
+            data: "Agora",
+            origemServico: "Amortização",
+            categoria: "Empréstimos"
+        });
+
+        // Abate da dívida
+        dividaAtual -= valorRealPago;
+        if (dividaAtual < 0) dividaAtual = 0;
+
+        falar(`Pagamento de ${formatarValor(valorRealPago)} realizado.`);
+        alert("Pagamento realizado com sucesso!");
+
+        atualizarExtrato();
+        atualizarDividaUI();
+    }
+}
 
 // --- LÓGICA DE EMPRÉSTIMO ---
 function atualizarSimulacaoEmprestimo() {
@@ -182,20 +237,31 @@ function atualizarSimulacaoEmprestimo() {
 }
 
 function contratarEmprestimo() {
-    const valor = parseFloat(document.getElementById("slider-emprestimo").value);
-    falar(`Contratando empréstimo de ${formatarValor(valor)}`);
-    if (confirm(`Contratar empréstimo de ${formatarValor(valor)}?`)) {
+    const valorSolicitado = parseFloat(document.getElementById("slider-emprestimo").value);
+    // Calcula dívida com 10% de juros base instantâneo
+    const valorComJuros = valorSolicitado * 1.10;
+
+    falar(`Contratando empréstimo de ${formatarValor(valorSolicitado)}`);
+
+    if (confirm(`Contratar empréstimo de ${formatarValor(valorSolicitado)}?\nSua dívida total será de ${formatarValor(valorComJuros)}.`)) {
+        // Deposita o dinheiro
         transacoes.unshift({
             id: Date.now(),
             descricao: "Empréstimo Contratado",
-            valor: valor,
+            valor: valorSolicitado,
             data: "Agora",
             origemServico: "ReneBank Crédito",
             categoria: "Empréstimos"
         });
+
+        // Aumenta a dívida
+        dividaAtual += valorComJuros;
+
         falar("Empréstimo aprovado com sucesso!");
         alert(`Aprovado!`);
+
         atualizarExtrato();
+        atualizarDividaUI();
         ativarTab("dashboard");
     }
 }
@@ -505,6 +571,7 @@ function fazerLogin() {
         renderizarInvestimentos();
         atualizarCaixinhaUI();
         atualizarSimulacaoEmprestimo();
+        atualizarDividaUI(); // Inicia mostrando a dívida
 
         falar("Bem vindo ao Rene Bank, Hiro. Estamos na tela inicial.");
 
@@ -580,9 +647,9 @@ function enviarMensagem() {
             resp = "Vejas suas últimas movimentações aqui:";
             acaoBotao = { label: "📜 Abrir Extrato", destino: "extrato" };
 
-        } else if (t.includes("emprestimo") || t.includes("credito")) {
-            resp = "Precisa de crédito? Simule agora:";
-            acaoBotao = { label: "💰 Simular Empréstimo", destino: "emprestimos" };
+        } else if (t.includes("emprestimo") || t.includes("credito") || t.includes("divida")) {
+            resp = "Precisa de crédito ou pagar dívida? Veja aqui:";
+            acaoBotao = { label: "💰 Empréstimos/Dívidas", destino: "emprestimos" };
 
         } else if (t.includes("cartao") || t.includes("numero")) {
             resp = "Cuidado com seus dados! Veja seu cartão aqui:";
@@ -601,7 +668,7 @@ function enviarMensagem() {
             btn.textContent = acaoBotao.label;
 
             btn.onclick = () => {
-                // AQUI ESTA A CORREÇÃO:
+                // AQUI ESTA A CORREÇÃO DE FECHAR O CHAT:
                 if (acaoBotao.acaoCustom) {
                     document.getElementById("overlay-cartao").classList.add("active");
                     falar("Abrindo cartão virtual.");
