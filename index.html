@@ -91,6 +91,15 @@
                 </section>
 
                 <section id="emprestimos" class="section">
+                    <div class="card" style="background: #fef2f2; border-color: #fecaca; margin-bottom: 10px;">
+                        <div class="card-header">
+                            <h2 class="card-title" style="color: #991b1b;">Minha Dívida Atual</h2>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div id="valor-divida" style="font-size: 24px; font-weight: bold; color: #dc2626;">R$ 0,00</div>
+                            <button class="btn-primary" style="width: auto; background: #dc2626; margin:0;" onclick="pagarDivida()">Pagar Dívida</button>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Simulador de Crédito</h2><span class="tag render">Aprovado</span></div>
@@ -104,11 +113,11 @@
                             <div class="form-group">
                                 <label>Parcelas</label>
                                 <select id="select-parcelas" onchange="atualizarSimulacaoEmprestimo()">
-                              <option value="1">1x (Sem juros)</option>
-                              <option value="3">3x (Juros 2%)</option>
-                              <option value="6">6x (Juros 5%)</option>
-                              <option value="12">12x (Juros 10%)</option>
-                          </select>
+                                    <option value="1">1x (Sem juros)</option>
+                                    <option value="3">3x (Juros 2%)</option>
+                                    <option value="6">6x (Juros 5%)</option>
+                                    <option value="12">12x (Juros 10%)</option>
+                                </select>
                             </div>
 
                             <div style="background: #f3f4f6; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 12px; display: flex; justify-content: space-between;">
@@ -140,11 +149,11 @@
                         <div class="form-group">
                             <label>Destinatário</label>
                             <select id="destinatario-pix">
-                  <option value="">Selecione...</option>
-                  <option value="mae">Mãe ❤️</option>
-                  <option value="jorge">Jorge (Dev)</option>
-                  <option value="padaria">Padaria</option>
-                </select>
+                                <option value="">Selecione...</option>
+                                <option value="mae">Mãe ❤️</option>
+                                <option value="jorge">Jorge (Dev)</option>
+                                <option value="padaria">Padaria</option>
+                            </select>
                         </div>
                         <div class="form-group"><label>Chave</label><input id="chave-pix" type="text" placeholder="Chave PIX" /></div>
                         <div class="form-group"><label>Valor</label><input id="valor-pix" type="number" step="0.01" placeholder="0,00" /></div>
@@ -258,8 +267,8 @@
                 </div>
 
                 <button id="btn-atualizar-cartao" class="btn-update-card">
-            <span>🔄</span> Gerar Novo Cartão Virtual
-        </button>
+                    <span>🔄</span> Gerar Novo Cartão Virtual
+                </button>
             </div>
         </div>
 
