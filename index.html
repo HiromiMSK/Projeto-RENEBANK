@@ -79,17 +79,31 @@
                     </div>
                     <div id="saldo-valor" class="saldo-valor" aria-live="polite">R$ 0,00</div>
                     <div class="saldo-sub">
-                        <span>Gasto: <strong id="gasto-mes">R$ 0,00</strong></span>
-                        <span>Recebido: <strong id="recebido-mes">R$ 0,00</strong></span>
+                        <span>Gasto Total: <strong id="gasto-mes">R$ 0,00</strong></span>
+                        <span>Receita: <strong id="recebido-mes">R$ 0,00</strong></span>
                     </div>
                 </div>
 
                 <nav class="actions-row">
-                    <button id="btn-pix-header" class="action-btn"><div class="action-icon">⚡</div><div class="action-label">Pix</div></button>
-                    <button id="btn-receber-header" class="action-btn" onclick="simularRecebimento()"><div class="action-icon">⬇️</div><div class="action-label">Receber</div></button>
-                    <button id="btn-boleto-header" class="action-btn"><div class="action-icon">📄</div><div class="action-label">Pagar</div></button>
-                    <button id="btn-emprestimo-header" class="action-btn"><div class="action-icon">💰</div><div class="action-label">Emprést.</div></button>
-                    <button id="btn-cartao-header" class="action-btn"><div class="action-icon">💳</div><div class="action-label">Cartão</div></button>
+                    <button id="btn-pix-header" class="action-btn">
+                        <div class="action-icon">⚡</div><div class="action-label">Pix</div>
+                    </button>
+                    <button id="btn-receber-header" class="action-btn">
+                        <div class="action-icon">⬇️</div><div class="action-label">Receber</div>
+                    </button>
+                    <button id="btn-boleto-header" class="action-btn">
+                        <div class="action-icon">📄</div><div class="action-label">Pagar</div>
+                    </button>
+                    <button class="action-btn" onclick="simularCompraCredito()">
+                        <div class="action-icon" style="background: #fee2e2; color: #b91c1c;">🛍️</div>
+                        <div class="action-label">Comprar</div>
+                    </button>
+                    <button id="btn-emprestimo-header" class="action-btn">
+                        <div class="action-icon">💰</div><div class="action-label">Emprést.</div>
+                    </button>
+                    <button id="btn-cartao-header" class="action-btn">
+                        <div class="action-icon">💳</div><div class="action-label">Cartão</div>
+                    </button>
                 </nav>
             </header>
 
@@ -106,11 +120,12 @@
                 <section id="dashboard" class="section active">
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Gastos do Mês</h2><span class="tag alerta">Limite</span></div>
+                            <h2 class="card-title">Fatura do Cartão</h2><span class="tag alerta">Crédito</span>
+                        </div>
                         <div class="gastos-wrapper">
                             <div class="gastos-info">
                                 <span id="label-gastos-mes">R$ 0,00</span>
-                                <span>de R$ 2.000,00</span>
+                                <span>de R$ 1.000,00 (Limite)</span>
                             </div>
                             <div class="progress-track">
                                 <div id="barra-gastos" class="progress-fill"></div>
@@ -120,7 +135,8 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Resumo por Categoria</h2><span class="tag">visão IA</span></div>
+                            <h2 class="card-title">Resumo por Categoria</h2><span class="tag">visão IA</span>
+                        </div>
                         <div id="resumo-categorias" class="resumo-grid"></div>
                     </div>
                 </section>
@@ -138,7 +154,8 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Simulador de Crédito</h2><span class="tag render">Aprovado</span></div>
+                            <h2 class="card-title">Simulador de Crédito</h2><span class="tag render">Aprovado</span>
+                        </div>
                         <div style="padding: 10px 0;">
                             <div style="font-size: 12px; opacity: 0.7; text-align: center;">Quanto você precisa?</div>
                             <div id="display-valor-emprestimo" class="loan-val-display">R$ 1.000,00</div>
@@ -169,7 +186,7 @@
                 <section id="extrato" class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Extrato</h2>
+                            <h2 class="card-title">Extrato Unificado</h2>
                             <div class="card-header-controls"><button id="btn-eye-extrato" class="btn-eye"><span aria-hidden="true">👁️</span></button></div>
                         </div>
                         <div id="lista-transacoes"></div>
@@ -223,7 +240,8 @@
                 <section id="investimentos" class="section">
                     <div class="card caixinha-card">
                         <div class="card-header">
-                            <h2 class="card-title">Caixinha Turbo</h2><span class="tag render">1% a.m.</span></div>
+                            <h2 class="card-title">Caixinha Turbo</h2><span class="tag render">1% a.m.</span>
+                        </div>
                         <div style="margin-bottom: 12px;"><span style="font-size: 12px; opacity: 0.8;">Guardado</span>
                             <div id="valor-caixinha" style="font-size: 24px; font-weight: bold;">R$ 0,00</div>
                         </div>
@@ -234,9 +252,11 @@
                         </div>
                         <button class="btn-ghost" style="color: #a5b4fc; margin-top: 8px; font-size: 11px;" onclick="simularRendimentoCaixinha()">✨ Render 1 mês</button>
                     </div>
+
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Carteira</h2><span class="tag risco">Risco: E-Sports</span></div>
+                            <h2 class="card-title">Carteira</h2><span class="tag risco">Risco: E-Sports</span>
+                        </div>
                         <div id="lista-investimentos" class="horizontal-scroll"></div>
                     </div>
                 </section>
@@ -258,7 +278,7 @@
                 </section>
             </main>
 
-            <footer class="app-footer"><span class="footer-brand">ReneBank · 4.1</span><span>IA Ativa</span></footer>
+            <footer class="app-footer"><span class="footer-brand">ReneBank · 4.0</span><span>IA Ativa</span></footer>
         </div>
 
         <div id="screen-chat" class="chat-screen">
@@ -268,7 +288,7 @@
             </div>
             <div id="chat-messages" class="chat-messages">
                 <div class="msg-bubble msg-bot">
-                    Olá, Hiro! Sou a IA do ReneBank. Posso ajudar com saldo, Pix ou empréstimos.
+                    Olá, Hiro! Sou a IA do ReneBank. Posso ajudar com saldo, limite, Pix ou investimentos.
                 </div>
             </div>
             <div class="chat-input-area">
@@ -300,6 +320,15 @@
                 <div class="cvv-area">
                     <div class="cvv-label">Código de Segurança (CVV)</div>
                     <div id="cvv-dinamico" class="cvv-valor">000</div>
+                </div>
+
+                <div class="limit-control-box" style="width: 100%; max-width: 320px; background: #fff; padding: 15px; border-radius: 12px; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 12px; font-weight: 600; color: #374151;">Ajustar Limite</span>
+                        <span id="display-limite-usuario" style="font-size: 14px; font-weight: 800; color: #111827;">R$ 1.000,00</span>
+                    </div>
+                    <input type="range" id="slider-limite" min="0" max="1000" step="50" value="1000" style="width: 100%; accent-color: #111827;" oninput="ajustarLimite(this.value)">
+                    <div style="font-size: 10px; color: #6b7280; margin-top: 4px; text-align: right;">Máximo permitido: R$ 1.000,00</div>
                 </div>
 
                 <button id="btn-atualizar-cartao" class="btn-update-card">
