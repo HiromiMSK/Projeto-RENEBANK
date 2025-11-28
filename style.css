@@ -1,4 +1,4 @@
-/* RESET */
+/* RESET PADRÃO */
 
 * {
     margin: 0;
@@ -9,7 +9,7 @@
 }
 
 
-/* ACESSIBILIDADE */
+/* ACESSIBILIDADE - Foco visível */
 
 body.acessibilidade-ativa *:focus-visible {
     outline: 4px solid #facc15 !important;
@@ -20,20 +20,23 @@ body.acessibilidade-ativa *:focus-visible {
 
 body {
     background: #e5e7eb;
+    /* Cor de fundo da página (fora do celular) */
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 16px;
     overflow-x: hidden;
+    transition: background 0.3s;
 }
 
 
-/* APP CONTAINER */
+/* APP CONTAINER - O "Celular" */
 
 .app-container {
     position: relative;
     background: #f9fafb;
+    /* Fundo padrão do app */
     width: 390px;
     height: 844px;
     max-width: 100%;
@@ -42,16 +45,67 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     border: 8px solid #111827;
+    /* Borda preta simulando a carcaça */
     display: flex;
     flex-direction: column;
 }
+
+
+/* Utilitário para esconder elementos */
 
 .d-none {
     display: none !important;
 }
 
 
-/* LOGIN & LOADING */
+/* --- NOTIFICAÇÕES (TOAST) --- */
+
+.toast {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10000;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid #facc15;
+    pointer-events: none;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-icon {
+    font-size: 24px;
+}
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.toast-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: #854d0e;
+    text-transform: uppercase;
+}
+
+.toast-msg {
+    font-size: 12px;
+    font-weight: 600;
+    color: #111827;
+}
+
+
+/* --- TELA DE LOGIN & FACEID --- */
 
 #screen-login {
     position: absolute;
@@ -108,6 +162,103 @@ body {
     margin-top: 10px;
 }
 
+.divider-login {
+    margin: 20px 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-faceid {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.btn-faceid:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+/* --- FACE ID OVERLAY --- */
+
+.faceid-overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.faceid-camera-box {
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 40px;
+    position: relative;
+    overflow: hidden;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.face-icon-large {
+    font-size: 80px;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.scanner-line {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: #00ff00;
+    box-shadow: 0 0 20px #00ff00;
+    top: 0;
+    animation: scanAnimation 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes scanAnimation {
+    from {
+        top: 0;
+        opacity: 0.5;
+    }
+    to {
+        top: 100%;
+        opacity: 1;
+    }
+}
+
+.faceid-text {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 14px;
+    font-family: monospace;
+    letter-spacing: 1px;
+}
+
+.faceid-success .faceid-camera-box {
+    border-color: #00ff00;
+}
+
+.faceid-success .face-icon-large {
+    color: #00ff00;
+}
+
+
+/* --- LOADING ANIMATION --- */
+
 #screen-loading {
     position: absolute;
     inset: 0;
@@ -163,7 +314,7 @@ body {
 }
 
 
-/* HEADER */
+/* --- HEADER PRINCIPAL --- */
 
 .header-wrapper {
     background: linear-gradient(145deg, #0f172a, #1d4ed8);
@@ -193,6 +344,9 @@ body {
     opacity: 0.9;
 }
 
+
+/* Tags de Pontos e IA */
+
 .tag-ia {
     background: #facc15;
     color: #78350f;
@@ -204,9 +358,24 @@ body {
     transition: transform 0.2s;
 }
 
+.tag-points {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.tag-points:active,
 .tag-ia:active {
     transform: scale(0.95);
 }
+
+
+/* Card de Saldo no Header */
 
 .saldo-card {
     background: #f9fafb;
@@ -267,7 +436,7 @@ body {
 }
 
 
-/* ACTIONS ROW */
+/* --- BOTÕES DE AÇÃO RÁPIDA (Pix, Pagar, etc) --- */
 
 .actions-row {
     display: flex;
@@ -317,7 +486,7 @@ body {
 }
 
 
-/* CONTENT */
+/* --- ÁREA DE CONTEÚDO PRINCIPAL --- */
 
 .app-content {
     padding: 10px 14px 10px;
@@ -338,6 +507,9 @@ body {
     background: #d1d5db;
     border-radius: 4px;
 }
+
+
+/* Menu de Abas (Pílulas) */
 
 .tabs {
     display: flex;
@@ -376,6 +548,9 @@ body {
     color: #f9fafb;
 }
 
+
+/* Seções (Escondidas por padrão) */
+
 .section {
     display: none;
     flex-direction: column;
@@ -387,6 +562,9 @@ body {
     display: flex;
 }
 
+
+/* --- CARDS GENÉRICOS --- */
+
 .card {
     background: #ffffff;
     border-radius: 18px;
@@ -394,6 +572,17 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
     border: 1px solid #e5e7eb;
 }
+
+
+/* Card de Dívida (Estilo Específico) */
+
+.card.card-danger-bg {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+
+/* Card da Caixinha (Estilo Roxo) */
 
 .card.caixinha-card {
     background: linear-gradient(135deg, #1e1b4b, #312e81);
@@ -441,6 +630,9 @@ body {
     color: #111827;
 }
 
+
+/* Badges (Tags coloridas) */
+
 .tag {
     font-size: 11px;
     padding: 3px 8px;
@@ -465,6 +657,9 @@ body {
     color: #854d0e;
 }
 
+
+/* Alerts */
+
 .alerta-ia {
     margin-top: 6px;
     font-size: 11px;
@@ -476,7 +671,7 @@ body {
 }
 
 
-/* GASTOS MENSAIS */
+/* --- ELEMENTOS DO DASHBOARD --- */
 
 .gastos-wrapper {
     margin-top: 8px;
@@ -515,44 +710,105 @@ body {
 }
 
 
-/* EMPRESTIMO */
+/* --- ELEMENTOS DE FORMULÁRIO --- */
 
-.loan-slider-container {
-    margin: 15px 0;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 6px;
+    font-size: 12px;
 }
 
-.loan-val-display {
-    font-size: 28px;
-    font-weight: 800;
+.form-group label {
     color: #111827;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-input[type=range] {
-    width: 100%;
-    -webkit-appearance: none;
-    background: transparent;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    background: #1d4ed8;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: -10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    cursor: pointer;
-    background: #d1d5db;
-    border-radius: 2px;
+.form-group input,
+.form-group select {
+    padding: 6px 8px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #111827;
+    font-size: 12px;
+    outline: none;
 }
+
+.form-group input:focus {
+    border-color: #2563eb;
+    background: #fff;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 10px;
+    border-radius: 999px;
+    border: none;
+    background: #16a34a;
+    color: #f9fafb;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.2s;
+}
+
+.btn-primary:active {
+    opacity: 0.9;
+}
+
+.btn-action-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-accent {
+    background: #4ade80;
+    color: #064e3b;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+
+/* Box de Informação Cinza */
+
+.info-box-gray {
+    background: #f3f4f6;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.boleto-dashed-box {
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+    border: 1px dashed #6b7280;
+}
+
+.boleto-label {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.boleto-value {
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+
+/* --- LISTA DE TRANSAÇÕES --- */
 
 .transacao-card {
     margin-top: 6px;
@@ -629,18 +885,8 @@ input[type=range]::-webkit-slider-runnable-track {
     color: #15803d;
 }
 
-.variacao {
-    font-size: 10px;
-    margin-top: 2px;
-}
 
-.variacao.up {
-    color: #16a34a;
-}
-
-.variacao.down {
-    color: #dc2626;
-}
+/* --- INVESTIMENTOS --- */
 
 .horizontal-scroll {
     display: flex;
@@ -686,6 +932,22 @@ input[type=range]::-webkit-slider-runnable-track {
     color: #6b7280;
 }
 
+.variacao {
+    font-size: 10px;
+    margin-top: 2px;
+}
+
+.variacao.up {
+    color: #16a34a;
+}
+
+.variacao.down {
+    color: #dc2626;
+}
+
+
+/* Resumo Grid */
+
 .resumo-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -711,71 +973,8 @@ input[type=range]::-webkit-slider-runnable-track {
     color: #111827;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 6px;
-    font-size: 12px;
-}
 
-.form-group label {
-    color: #111827;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.form-group input,
-.form-group select {
-    padding: 6px 8px;
-    border-radius: 10px;
-    border: 1px solid #d1d5db;
-    background: #f9fafb;
-    color: #111827;
-    font-size: 12px;
-    outline: none;
-}
-
-.form-group input:focus {
-    border-color: #2563eb;
-    background: #fff;
-}
-
-.btn-primary {
-    width: 100%;
-    padding: 10px;
-    border-radius: 999px;
-    border: none;
-    background: #16a34a;
-    color: #f9fafb;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: background 0.2s;
-}
-
-.btn-primary:active {
-    opacity: 0.9;
-}
-
-.btn-action-group {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-accent {
-    background: #4ade80;
-    color: #064e3b;
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-}
-
-
-/* PROFILE STYLES */
+/* --- PERFIL --- */
 
 .profile-header {
     display: flex;
@@ -852,7 +1051,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 
-/* OVERLAYS & CHAT */
+/* --- CHAT, CARTÃO E LOJA (OVERLAYS) --- */
 
 .chat-screen {
     position: absolute;
@@ -955,15 +1154,15 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 
-/* CARTAO VIRTUAL */
+/* Overlay Full (Fundo) */
 
-.overlay-cartao {
+.overlay-full {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(243, 244, 246, 0.85);
+    background: rgba(243, 244, 246, 0.95);
     backdrop-filter: blur(8px);
     display: none;
     flex-direction: column;
@@ -972,7 +1171,7 @@ input[type=range]::-webkit-slider-runnable-track {
     animation: fade-in 0.3s ease;
 }
 
-.overlay-cartao.active {
+.overlay-full.active {
     display: flex;
 }
 
@@ -1007,6 +1206,9 @@ input[type=range]::-webkit-slider-runnable-track {
     font-size: 16px;
 }
 
+
+/* Elementos do Cartão Virtual */
+
 .cartao-container-center {
     flex: 1;
     display: flex;
@@ -1031,8 +1233,6 @@ input[type=range]::-webkit-slider-runnable-track {
     flex-direction: column;
     justify-content: space-between;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
 }
 
 .cartao-virtual::before {
@@ -1149,9 +1349,81 @@ input[type=range]::-webkit-slider-runnable-track {
     transform: scale(0.95);
 }
 
-.a11y-toggle {
+
+/* Loja de Pontos */
+
+.loja-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.card-pontos-destaque {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+}
+
+.loja-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.cupom-card {
+    background: #fff;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.cupom-card:active {
+    transform: scale(0.96);
+    border-color: #facc15;
+}
+
+.cupom-icon {
+    font-size: 24px;
+    background: #fef9c3;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #854d0e;
+}
+
+.cupom-desc {
+    font-size: 12px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.cupom-price {
+    font-size: 11px;
+    color: #16a34a;
+    font-weight: 800;
+    background: #dcfce7;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+
+/* Botões Flutuantes (A11y e Dark Mode) */
+
+.float-btn {
     position: fixed;
-    bottom: 20px;
     right: 20px;
     width: 50px;
     height: 50px;
@@ -1169,38 +1441,30 @@ input[type=range]::-webkit-slider-runnable-track {
     z-index: 9999;
 }
 
-.a11y-toggle:hover {
+.float-btn:hover {
     transform: scale(1.1);
 }
 
-.a11y-toggle.ativo {
+.btn-a11y {
+    bottom: 20px;
+}
+
+.btn-a11y.ativo {
     background: #facc15;
     color: #111827;
     border-color: #111827;
 }
 
-.btn-delete-transacao {
-    background: #fee2e2;
-    color: #b91c1c;
-    border: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 8px;
-    flex-shrink: 0;
+.btn-theme {
+    bottom: 80px;
+    /* Acima do botão de voz */
 }
 
 
-/* BOTÃO DE AÇÃO NO CHAT */
+/* Botão de ação do Chat */
 
 .chat-action-btn {
-    display: block;
+    display: flex;
     margin-top: 8px;
     background: #111827;
     color: #facc15;
@@ -1213,7 +1477,6 @@ input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
     text-align: left;
     transition: background 0.2s;
-    display: flex;
     justify-content: space-between;
     align-items: center;
 }
@@ -1226,4 +1489,159 @@ input[type=range]::-webkit-slider-runnable-track {
 .chat-action-btn::after {
     content: '→';
     font-size: 16px;
+}
+
+
+/* ==================================================
+   DARK MODE (TEMA ESCURO)
+   Esta seção sobrescreve cores quando a classe .dark-mode
+   está ativa no body.
+================================================== */
+
+body.dark-mode {
+    background: #111827;
+    /* Fundo fora do celular */
+}
+
+body.dark-mode .app-container {
+    background: #0f172a;
+    /* Fundo do App */
+    border-color: #374151;
+    /* Borda do celular mais clara */
+}
+
+
+/* Ajustes gerais de texto e containers */
+
+body.dark-mode .app-content {
+    background: #1e293b;
+}
+
+body.dark-mode .card,
+body.dark-mode .transacao-card,
+body.dark-mode .invest-card,
+body.dark-mode .resumo-item,
+body.dark-mode .saldo-card,
+body.dark-mode .action-btn,
+body.dark-mode .tab-btn {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+
+/* Textos principais brancos */
+
+body.dark-mode .card-title,
+body.dark-mode .transacao-descricao,
+body.dark-mode .resumo-valor,
+body.dark-mode .saldo-valor,
+body.dark-mode .action-label,
+body.dark-mode .invest-name,
+body.dark-mode .boleto-value,
+body.dark-mode .profile-name,
+body.dark-mode .cupom-desc,
+body.dark-mode .loja-titulo {
+    color: #f9fafb !important;
+}
+
+
+/* Labels e textos secundários */
+
+body.dark-mode .saldo-label,
+body.dark-mode .transacao-meta,
+body.dark-mode .resumo-label,
+body.dark-mode .boleto-label,
+body.dark-mode .profile-sub,
+body.dark-mode label,
+body.dark-mode .info-box-gray span {
+    color: #9ca3af !important;
+}
+
+
+/* Inputs e Selects */
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode .info-box-gray,
+body.dark-mode .boleto-dashed-box {
+    background: #374151 !important;
+    border-color: #4b5563;
+    color: #fff;
+}
+
+
+/* Tabs e Botões */
+
+body.dark-mode .tab-btn {
+    background: #374151;
+    color: #9ca3af;
+}
+
+body.dark-mode .tab-btn.active {
+    background: #facc15;
+    color: #111827;
+}
+
+body.dark-mode .action-icon {
+    background: #374151;
+    color: #facc15;
+}
+
+
+/* Overlays (Chat, Loja, Cartão) */
+
+body.dark-mode .overlay-full,
+body.dark-mode .chat-screen {
+    background: rgba(15, 23, 42, 0.98);
+}
+
+body.dark-mode .overlay-title-text,
+body.dark-mode .btn-close-overlay {
+    color: #fff;
+}
+
+body.dark-mode .chat-messages {
+    background: #1e293b;
+}
+
+body.dark-mode .chat-header {
+    background: #000;
+}
+
+body.dark-mode .chat-input-area {
+    background: #1f2937;
+    border-top-color: #374151;
+}
+
+body.dark-mode .msg-bot {
+    background: #374151;
+    color: #fff;
+    border-color: #4b5563;
+}
+
+body.dark-mode .cvv-area {
+    background: #1f2937;
+}
+
+body.dark-mode .cvv-valor {
+    color: #facc15;
+}
+
+body.dark-mode .cupom-card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+body.dark-mode .menu-item {
+    color: #e5e7eb;
+    border-bottom-color: #374151;
+}
+
+
+/* Rodapé */
+
+body.dark-mode .app-footer {
+    background: #0f172a;
+    border-top-color: #1e293b;
 }
